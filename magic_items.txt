@@ -1,0 +1,417 @@
+Table: Random Magic Item Generation
+Minor	Medium	Major	Item
+01–04	01–10	01–10	Armor and shields
+05–09	11–20	11–20	Weapons
+10–44	21–30	21–25	Potions
+45–46	31–40	26–35	Rings
+—	41–50	36–45	Rods
+47–81	51–65	46–55	Scrolls
+—	66–68	56–75	Staves
+82–91	69–83	76–80	Wands
+92–100	84–100	81–100	Wondrous items
+
+
+
+Table: Armor and Shields
+Minor	Medium	Major	Item	Base Price
+01–60	01–05	—	+1 shield	1,000 gp
+61–80	06–10	—	+1 armor	1,000 gp
+81–85	11–20	—	+2 shield	4,000 gp
+86–87	21–30	—	+2 armor	4,000 gp
+—	31–40	01–08	+3 shield	9,000 gp
+—	41–50	09–16	+3 armor	9,000 gp
+—	51–55	17–27	+4 shield	16,000 gp
+—	56–57	28–38	+4 armor	16,000 gp
+—	—	39–49	+5 shield	25,000 gp
+—	—	50–57	+5 armor	25,000 gp
+—	—	—	+6 armor/shield1	36,000 gp
+—	—	—	+7 armor/shield1	49,000 gp
+—	—	—	+8 armor/shield1	64,000 gp
+—	—	—	+9 armor/shield1	81,000 gp
+—	—	—	+10 armor/shield1	100,000 gp
+88–89	58–60	58–60	Specific armor2	—
+90–91	61–63	 61–63	Specific shield3	—
+92–100	64–100	64–100	Special ability and roll again2,3	—
+
+1 Armor and shields can't have enhancement bonuses higher than +5. Use these lines to determine price when special abilities are added in.
+2 Roll on Table: Specific Armors.
+3 Roll on Table: Specific Shields.
+
+
+Table: Armor Special Abilities
+Minor	Medium	Major	Special Ability	Base Price Modifier
+01–25	01–05	01–03	Glamered	+2,700 gp
+26–32	06–08	04	Fortification, light	+1 bonus1
+33–52	09–11	—	Slick	+3,750 gp
+53–92	12–17	—	Shadow	+3,750 gp
+93–96	18–19	—	Spell resistance (13)	+2 bonus1
+97	20–29	05–07	Slick, improved	+15,000 gp
+98–99	30–49	08–13	Shadow, improved	+15,000 gp
+—	50–74	14–28	Energy resistance	+18,000 gp
+—	75–79	29–33	Ghost touch	+3 bonus1
+—	80–84	34–35	Invulnerability	+3 bonus1
+—	85–89	36–40	Fortification, moderate	+3 bonus1
+—	90–94	41–42	Spell resistance (15)	+3 bonus1
+—	95–99	43	Wild	+3 bonus1
+—	—	44–48	Slick, greater	+33,750 gp
+—	—	49–58	Shadow, greater	+33,750 gp
+—	—	59–83	Energy resistance, improved	+42,000 gp
+—	—	84–88	Spell resistance (17)	+4 bonus1
+—	—	89	Etherealness	+49,000 gp
+—	—	90	Undead controlling	+49,000 gp
+—	—	91–92	Fortification, heavy	+5 bonus1
+—	—	93–94	Spell resistance (19)	+5 bonus1
+—	—	95–99	Energy resistance, greater	+66,000 gp
+100	100	100	Roll twice again2	—
+1 Add to enhancement bonus on Table: Armor and Shields to determine total market price
+2 If you roll a special ability twice, only one counts. If you roll two versions of the same special ability, use the better.
+
+Table: Shield Special Abilities
+Minor	Medium	Major	Special Ability	Base Price Modifier
+01–20	01–10	01–05	Arrow catching	+1 bonus1
+21–40	11–20	06–08	Bashing	+1 bonus1
+41–50	21–25	09–10	Blinding	+1 bonus1
+51–75	26–40	11–15	Fortification, light	+1 bonus1
+76–92	41–50	16–20	Arrow deflection	+2 bonus1
+93–97	51–57	21–25	Animated	+2 bonus1
+98–99	58–59	—	Spell resistance (13)	+2 bonus1
+—	60–79	26–41	Energy resistance	+18,000 gp
+—	80–85	42–46	Ghost touch	+3 bonus1
+—	86–95	47–56	Fortification, moderate	+3 bonus1
+—	96–98	57–58	Spell resistance (15)	+3 bonus1
+—	99	59	Wild	+3 bonus1
+—	—	60–84	Energy resistance, improved	+42,000 gp
+—	—	85–86	Spell resistance (17)	+4 bonus1
+—	—	87	Undead controlling	+49,000 gp
+—	—	88–91	Fortification, heavy	+5 bonus1
+—	—	92–93	Reflecting	+5 bonus1
+—	—	94	Spell resistance (19)	+5 bonus1
+—	—	95–99	Energy resistance, greater	+66,000 gp
+100	100	100	Roll twice again2	—
+1 Add to enhancement bonus on Table: Armor and Shields to determine total market price
+2 If you roll a special ability twice, only one counts. If you roll two versions of the same special ability, use the better.
+
+
+
+
+Table: Weapons
+Minor	Medium	Major	Weapon	Bonus Base Price1
+01–70	01–10	—	+1	2,000 gp
+71–85	11–29	—	+2	8,000 gp
+—	30–58	01–20	+3	18,000 gp
+—	59–62	21–38	+4	32,000 gp
+—	—	39–49	+5	50,000 gp
+—	—	—	+62	72,000 gp
+—	—	—	+72	98,000 gp
+—	—	—	+82	128,000 gp
+—	—	—	+92	162,000 gp
+—	—	—	+102	200,000 gp
+86–90	63–68	50–63	Specific weapon3	—
+91–100	69–100	64–100	Special ability and roll again4	—
+1 For ammunition, this price is for 50 arrows, bolts, or bullets.
+2 A weapon can't have an enhancement bonus higher than +5. Use these lines to determine price when special abilities are added in.
+3 See Table: Specific Weapons.
+4 See Table: Melee Weapon Special Abilities for melee weapons and Table: Ranged Weapon Special Abilities for ranged weapons.
+Table: Melee Weapon Special Abilities
+Minor	Medium	Major	Special Ability	Base Price Modifier1
+01–10	01–06	01–03	Bane	+1 bonus
+11–17	07–12	—	Defending	+1 bonus
+18–27	13–19	04–06	Flaming	+1 bonus
+28–37	20–26	07–09	Frost	+1 bonus
+38–47	27–33	10–12	Shock	+1 bonus
+48–56	34–38	13–15	Ghost touch	+1 bonus
+57–67	39–44	—	Keen2	+1 bonus
+68–71	45–48	16–19	Ki Focus	+1 bonus
+72–75	49–50	—	Merciful	+1 bonus
+76–82	51–54	20–21	Mighty cleaving	+1 bonus
+83–87	55–59	22–24	Spell storing	+1 bonus
+88–91	60–63	25–28	Throwing	+1 bonus
+92–95	64–65	29–32	Thundering	+1 bonus
+96–99	66–69	33–36	Vicious	+1 bonus
+—	70–72	37–41	Anarchic	+2 bonus
+—	73–75	42–46	Axiomatic	+2 bonus
+—	76–78	47–49	Disruption3	+2 bonus
+—	79–81	50–54	Flaming burst	+2 bonus
+—	82–84	55–59	Icy burst	+2 bonus
+—	85–87	60–64	Holy	+2 bonus
+—	88–90	65–69	Shocking burst	+2 bonus
+—	91–93	70–74	Unholy	+2 bonus
+—	94–95	75–78	Wounding	+2 bonus
+—	—	79–83	Speed	+3 bonus
+—	—	84–86	Brilliant energy	+4 bonus
+—	—	87–88	Dancing	+4 bonus
+—	—	89–90	Vorpal2	+5 bonus
+100	96–100	91–100	Roll again twice4	—
+1 Add to enhancement bonus on Table: Weapons to determine total market price.
+2 Piercing or slashing weapons only (slashing only for vorpal). Reroll if randomly generated for a bludgeoning weapon.
+3 Bludgeoning weapons only. Reroll if randomly generated for a piercing or slashing weapon.
+4 Reroll if you get a duplicate special ability, an ability incompatible with an ability that you've already rolled, or if the extra ability puts you over the +10 limit. A weapon's enhancement bonus and special ability bonus equivalents can't total more than +10.
+Table: Ranged Weapon Special Abilities
+Minor	Medium	Major	Special Ability	Base Price Modifier1
+01–12	01–08	01–04	Bane2	+1 bonus
+13–25	09–16	05–08	Distance	+1 bonus
+26–40	17–28	09–12	Flaming2	+1 bonus
+41–55	29–40	13–16	Frost2	+1 bonus
+56–60	41–42	—	Merciful2	+1 bonus
+61–68	43–47	17–21	Returning	+1 bonus
+69–83	48–59	22–25	Shock2	+1 bonus
+84–93	60–64	26–27	Seeking	+1 bonus
+94–99	65–68	28–29	Thundering2	+1 bonus
+—	69–71	30–34	Anarchic2	+2 bonus
+—	72–74	35–39	Axiomatic2	+2 bonus
+—	75–79	40–49	Flaming burst2	+2 bonus
+—	80–82	50–54	Holy2	+2 bonus
+—	83–87	55–64	Icy burst2	+2 bonus
+—	88–92	65–74	Shocking burst2	+2 bonus
+—	93–95	75–79	Unholy2	+2 bonus
+—	—	80–84	Speed	+3 bonus
+—	—	85–90	Brilliant energy	+4 bonus
+100	96–100	91–100	Roll again twice2	—
+1 Add to enhancement bonus on Table: Weapons to determine total market price.
+2 Bows, crossbows, and slings crafted with this ability bestow this power upon their ammunition.
+3 Reroll if you get a duplicate special ability, an ability incompatible with an ability that you've already rolled, or if the extra ability puts you over the +10 limit. A weapon's enhancement bonus and special ability bonus equivalents can't total more than +10.
+
+Table: Specific Weapons
+Minor	Medium	Major	Specific Weapon	Market Price
+01–15	—	—	Sleep arrow	132 gp
+16–25	—	—	Screaming bolt	267 gp
+26–45	—	—	Silver dagger, masterwork	322 gp
+46–65	—	—	Cold iron longsword, masterwork	330 gp
+66–75	01–09	—	Javelin of lightning	1,500 gp
+76–80	10–15	—	Slaying arrow	2,282 gp
+81–90	16–24	—	Adamantine dagger	3,002 gp
+91–100	25–33	—	Adamantine battleaxe	3,010 gp
+—	34–37	—	Slaying arrow (greater)	4,057 gp
+—	38–40	—	Shatterspike	4,315 gp
+—	41–46	—	Dagger of venom	8,302 gp
+—	47–51	—	Trident of warning	10,115 gp
+—	52–57	01–04	Assassin's dagger	10,302 gp
+—	58–62	05–07	Shifter's sorrow	12,780 gp
+—	63–66	08–09	Trident of fish command	18,650 gp
+—	67–74	10–13	Flame tongue	20,715 gp
+—	75–79	14–17	Luck blade (0 wishes)	22,060 gp
+—	80–86	18–24	Sword of subtlety	22,310 gp
+—	87–91	25–31	Sword of the planes	22,315 gp
+—	92–95	32–37	Nine lives stealer	23,057 gp
+—	96–98	38–42	Oathbow	25,600 gp
+—	99–100	43–46	Sword of life stealing	25,715 gp
+—	—	47–51	Mace of terror	38,552 gp
+—	—	52–57	Life-drinker	40,320 gp
+—	—	58–62	Sylvan scimitar	47,315 gp
+—	—	63–67	Rapier of puncturing	50,320 gp
+—	—	68–73	Sun blade	50,335 gp
+—	—	74–79	Frost brand	54,475 gp
+—	—	80–84	Dwarven thrower	60,312 gp
+—	—	85–91	Luck blade (1 wish)	62,360 gp
+—	—	92–95	Mace of smiting	75,312 gp
+—	—	96–97	Luck blade (2 wishes)	102,660 gp
+—	—	98–99	Holy avenger	120,630 gp
+—	—	100	Luck blade (3 wishes)	142,960 gp
+
+
+Table: Potions
+Minor	Medium	Major	Spell Level	Caster Level
+01–20	—	—	0	1st
+21–60	01–20	—	1st	1st
+61–100	21–60	01–20	2nd	3rd
+—	61–100	21–100	3rd	5th
+
+Potion Costs
+Spell Level	Cleric, Druid, Wizard	Sorcerer	Bard	Paladin, Ranger
+0	25 gp	25 gp	25 gp	—
+1st	50 gp	50 gp	50 gp	50 gp
+2nd	300 gp	400 gp	400 gp	400 gp
+3rd	750 gp	900 gp	1,050 gp	1,050 gp
+
+
+Table: Scrolls
+Minor	Medium	Major	Spell Level	Caster Level
+01–05	—	—	0	1st
+06–50	—	—	1st	1st
+51–95	01–05	—	2nd	3rd
+96–100	06–65	—	3rd	5th
+—	66–95	01–05	4th	7th
+—	96–100	06–50	5th	9th
+—	—	51–70	6th	11th
+—	—	71–85	7th	13th
+—	—	86–95	8th	15th
+—	—	96–100	9th	17th
+Scroll Costs
+Spell Level	Cleric, Druid, Wizard	Sorcerer	Bard	Paladin, Ranger
+0	12.5 gp	12.5 gp	12.5 gp	—
+1st	25 gp	25 gp	25 gp	25 gp
+2nd	150 gp	200 gp	200 gp	200 gp
+3rd	375 gp	450 gp	525 gp	525 gp
+4th	700 gp	800 gp	1,000 gp	1,000 gp
+5th	1,125 gp	1,250 gp	1,625 gp	—
+6th	1,650 gp	1,800 gp	2,400 gp	—
+7th	2,275 gp	2,450 gp	—	—
+8th	3,000 gp	3,200 gp	—	—
+9th	3,825 gp	4,050 gp	—	—
+
+
+
+
+
+Table: Wands
+Minor	Medium	Major	Spell Level	Caster Level
+01–05	—	—	0	1st
+06–60	—	—	1st	1st
+61–100	01–60	—	2nd	3rd
+—	61–100	01–60	3rd	5th
+—	—	61–100	4th	7th
+A wand is a thin baton that contains a single spell of 4th level or lower. A wand has 50 charges when created—each charge allows the use of the wand's spell one time. A wand that runs out of charges is just a stick. The price of a wand is equal to the level of the spell × the creator's caster level × 750 gp. If the wand has a material component cost, it is added to the base price and cost to create once for each charge (50 × material component cost). Table: Wands gives sample prices for wands created at the lowest possible caster level for each spellcasting class. Note that some spells appear at different levels for different casters. The level of such spells depends on the caster crafting the wand.
+
+Wand Costs
+Spell Level	Cleric, Druid, Wizard	Sorcerer	Bard	Paladin, Ranger
+0	375 gp	375 gp	375 gp	—
+1st	750 gp	750 gp	750 gp	750 gp
+2nd	4,500 gp	6,000 gp	6,000 gp	6,000 gp
+3rd	11,250 gp	13,500 gp	15,750 gp	15,750 gp
+4th	21,000 gp	24,000 gp	30,000 gp	30,000 gp
+
+
+
+
+Table: Weapons
+Simple Weapons	Cost	Dmg (S)	Dmg (M)	Critical	Range	Weight1	 Type2	Special
+Unarmed Attacks
+Gauntlet	2 gp	1d2	1d3	×2	—	1 lb.	B	—
+Unarmed strike	—	1d2	1d3	×2	—	—	B	nonlethal
+Light Melee Weapons
+Dagger	2 gp	1d3	1d4	19–20/×2	10 ft.	1 lb.	P or S	—
+Dagger, punching	2 gp	1d3	1d4	×3	—	1 lb.	P	—
+Gauntlet, spiked	5 gp	1d3	1d4	×2	—	1 lb.	P	—
+Mace, light	5 gp	1d4	1d6	×2	—	4 lbs.	B	—
+Sickle	6 gp	1d4	1d6	×2	—	2 lbs.	S	trip
+One-Handed Melee Weapons
+Club	—	1d4	1d6	×2	10 ft.	3 lbs.	B	—
+Mace, heavy	12 gp	1d6	1d8	×2	—	8 lbs.	B	—
+Morningstar	8 gp	1d6	1d8	×2	—	6 lbs.	B and P	—
+Shortspear	1 gp	1d4	1d6	×2	20 ft.	3 lbs.	P	—
+Two-Handed Melee Weapons
+Longspear	5 gp	1d6	1d8	×3	—	9 lbs.	P	brace, reach
+Quarterstaff	—	1d4/1d4	1d6/1d6	×2	—	4 lbs.	B	double, monk
+Spear	2 gp	1d6	1d8	×3	20 ft.	6 lbs.	P	brace
+Ranged Weapons
+Blowgun	2 gp	1	1d2	×2	20 ft.	1 lb.	P	—
+Darts, blowgun (10)	5 sp	—	—	—	—	—	—	—
+Crossbow, heavy	50 gp	1d8	1d10	19–20/×2	120 ft.	8 lbs.	P	—
+Bolts, crossbow (10)	1 gp	—	—	—	—	1 lb.	—	—
+Crossbow, light	35 gp	1d6	1d8	19–20/×2	80 ft.	4 lbs.	P	—
+Bolts, crossbow (10)	1 gp	—	—	—	—	1 lb.	—	—
+Dart	5 sp	1d3	1d4	×2	20 ft.	1/2 lb.	P	—
+Javelin	1 gp	1d4	1d6	×2	30 ft.	2 lbs.	P	—
+Sling	—	1d3	1d4	×2	50 ft.	—	B	—
+Bullets, sling (10)	1 sp	—	—	—	—	5 lbs.	—	—
+Martial Weapons	Cost	Dmg (S)	Dmg (M)	Critical	Range	Weight1	 Type2	Special
+Light Melee Weapons
+Axe, throwing	8 gp	1d4	1d6	×2	10 ft.	2 lbs.	S	—
+Hammer, light	1 gp	1d3	1d4	×2	20 ft.	2 lbs.	B	—
+Handaxe	6 gp	1d4	1d6	×3	—	3 lbs.	S	—
+Kukri	8 gp	1d3	1d4	18–20/×2	—	2 lbs.	S	—
+Pick, light	4 gp	1d3	1d4	×4	—	3 lbs.	P	—
+Sap	1 gp	1d4	1d6	×2	—	2 lbs.	B	nonlethal
+Shield, light	special	1d2	1d3	×2	—	special	B	—
+Spiked armor	special	1d4	1d6	×2	—	special	P	—
+Spiked shield, light	special	1d3	1d4	×2	—	special	P	—
+Starknife	24 gp	1d3	1d4	×3	20 ft.	3 lbs.	P	—
+Sword, short	10 gp	1d4	1d6	19–20/×2	—	2 lbs.	P	—
+One-Handed Melee Weapons
+Battleaxe	10 gp	1d6	1d8	×3	—	6 lbs.	S	—
+Flail	8 gp	1d6	1d8	×2	—	5 lbs.	B	disarm, trip
+Longsword	15 gp	1d6	1d8	19–20/×2	—	4 lbs.	S	—
+Pick, heavy	8 gp	1d4	1d6	×4	—	6 lbs.	P	—
+Rapier	20 gp	1d4	1d6	18–20/×2	—	2 lbs.	P	—
+Scimitar	15 gp	1d4	1d6	18–20/×2	—	4 lbs.	S	—
+Shield, heavy	special	1d3	1d4	×2	—	special	B	—
+Spiked shield, heavy	special	1d4	1d6	×2	—	special	P	—
+Trident	15 gp	1d6	1d8	×2	10 ft.	4 lbs.	P	brace
+Warhammer	12 gp	1d6	1d8	×3	—	5 lbs.	B	—
+Two-Handed Melee Weapons
+Falchion	75 gp	1d6	2d4	18–20/×2	—	8 lbs.	S	—
+Glaive	8 gp	1d8	1d10	×3	—	10 lbs.	S	reach
+Greataxe	20 gp	1d10	1d12	×3	—	12 lbs.	S	—
+Greatclub	5 gp	1d8	1d10	×2	—	8 lbs.	B	—
+Flail, heavy	15 gp	1d8	1d10	19–20/×2	—	10 lbs.	B	disarm, trip
+Greatsword	50 gp	1d10	2d6	19–20/×2	—	8 lbs.	S	—
+Guisarme	9 gp	1d6	2d4	×3	—	12 lbs.	S	reach, trip
+Halberd	10 gp	1d8	1d10	×3	—	12 lbs.	P or S	brace, trip
+Lance	10 gp	1d6	1d8	×3	—	10 lbs.	P	reach
+Ranseur	10 gp	1d6	2d4	×3	—	12 lbs.	P	disarm, reach
+Scythe	18 gp	1d6	2d4	×4	—	10 lbs.	P or S	trip
+Ranged Weapons
+Longbow	75 gp	1d6	1d8	×3	100 ft.	3 lbs.	P	—
+Arrows (20)	1 gp	—	—	—	—	3 lbs.	—	—
+Longbow, composite	100 gp	1d6	1d8	×3	110 ft.	3 lbs.	P	—
+Arrows (20)	1 gp	—	—	—	—	3 lbs.	—	—
+Shortbow	30 gp	1d4	1d6	×3	60 ft.	2 lbs.	P	—
+Arrows (20)	1 gp	—	—	—	—	3 lbs.	—	—
+Shortbow, composite	75 gp	1d4	1d6	×3	70 ft.	2 lbs.	P	—
+Arrows (20)	1 gp	—	—	—	—	3 lbs.	—	—
+Exotic Weapons	Cost	Dmg (S)	Dmg (M)	Critical	Range	Weight1	 Type2	Special
+Light Melee Weapons
+Kama	2 gp	1d4	1d6	×2	—	2 lbs.	S	 monk, trip
+Nunchaku	2 gp	1d4	1d6	×2	—	2 lbs.	B	disarm, monk
+Sai	1 gp	1d3	1d4	×2	—	1 lb.	B	disarm, monk
+Siangham	3 gp	1d4	1d6	×2	—	1 lb.	P	monk
+One-Handed Melee Weapons
+Sword, bastard	35 gp	1d8	1d10	19–20/×2	—	6 lbs.	S	—
+Waraxe, dwarven	30 gp	1d8	1d10	×3	—	8 lbs.	S	—
+Whip	1 gp	1d2	1d3	×2	—	2 lbs.	S	disarm, nonlethal, reach, trip
+Two-Handed Melee Weapons
+Axe, orc double	60 gp	1d6/1d6	1d8/1d8	×3	—	15 lbs.	S	double
+Chain, spiked	25 gp	1d6	2d4	×2	—	10 lbs.	P	disarm, trip
+Curve blade, elven	80 gp	1d8	1d10	18–20/×2	—	7 lbs.	S	—
+Flail, dire	90 gp	1d6/1d6	1d8/1d8	×2	—	10 lbs.	B	disarm, double, trip
+Hammer, gnome hooked	20 gp	1d6/1d4	1d8/1d6	×3/×4	—	6 lbs.	B or P	double, trip
+Sword, two-bladed	100 gp	1d6/1d6	1d8/1d8	19–20/×2	—	10 lbs.	S	double
+Urgrosh, dwarven	50 gp	1d6/1d4	1d8/1d6	×3	—	12 lbs.	P or S	brace, double
+Ranged Weapons
+Bolas	5 gp	1d3	1d4	×2	10 ft.	2 lbs.	B	nonlethal, trip
+Crossbow, hand	100 gp	1d3	1d4	19–20/×2	30 ft.	2 lbs.	P	—
+Bolts (10)	1 gp	—	—	—	—	1 lb.	—	—
+Crossbow, repeating heavy	400 gp	1d8	1d10	19–20/×2	120 ft.	12 lbs.	P	—
+Bolts (5)	1 gp	—	—	—	—	1 lb.	—	—
+Crossbow, repeating light	250 gp	1d6	1d8	19–20/×2	80 ft.	6 lbs.	P	—
+Bolts (5)	1 gp	—	—	—	—	1 lb.	—	—
+Net	20 gp	—	—	—	10 ft.	6 lbs.	—	—
+Shuriken (5)	1 gp	1	1d2	×2	10 ft.	1/2 lb.	P	monk
+Sling staff, halfling	20 gp	1d6	1d8	×3	80 ft.	3 lbs.	B	—
+Bullets, sling (10)	1 sp	—	—	—	—	5 lbs.	—	—
+1 Weight figures are for Medium weapons. A Small weapon weighs half as much, and a Large weapon weighs twice as much.
+2 A weapon with two types is both types if the entry specifies “and,” or either type (wielder's choice) if the entry specifies “or.”
+
+Table: Armor and Shields
+Armor	Cost	Armor/Shield Bonus	Maximum Dex Bonus	Armor Check Penalty	Arcane Spell Failure Chance	Speed	Weight1
+30 ft.	20 ft.
+Light armor
+Padded	5 gp	+1	+8	0	5%	30 ft.	20 ft.	10 lbs.
+Leather	10 gp	+2	+6	0	10%	30 ft.	20 ft.	15 lbs.
+Studded leather	25 gp	+3	+5	–1	15%	30 ft.	20 ft.	20 lbs.
+Chain shirt	100 gp	+4	+4	–2	20%	30 ft.	20 ft.	25 lbs.
+Medium armor
+Hide	15 gp	+4	+4	–3	20%	20 ft.	15 ft.	25 lbs.
+Scale mail	50 gp	+5	+3	–4	25%	20 ft.	15 ft.	30 lbs.
+Chainmail	150 gp	+6	+2	–5	30%	20 ft.	15 ft.	40 lbs.
+Breastplate	200 gp	+6	+3	–4	25%	20 ft.	15 ft.	30 lbs.
+Heavy armor
+Splint mail	200 gp	+7	+0	–7	40%	20 ft.2	15 ft.2	45 lbs.
+Banded mail	250 gp	+7	+1	–6	35%	20 ft.2	15 ft.2	35 lbs.
+Half-plate	600 gp	+8	+0	–7	40%	20 ft.2	15 ft.2	50 lbs.
+Full plate	1,500 gp	+9	+1	–6	35%	20 ft.2	15 ft.2	50 lbs.
+Shields
+Buckler	5 gp	+1	—	–1	5%	—	—	5 lbs.
+Shield, light wooden	3 gp	+1	—	–1	5%	—	—	5 lbs.
+Shield, light steel	9 gp	+1	—	–1	5%	—	—	6 lbs.
+Shield, heavy wooden	7 gp	+2	—	–2	15%	—	—	10 lbs.
+Shield, heavy steel	20 gp	+2	—	–2	15%	—	—	15 lbs.
+Shield, tower	30 gp	+43	+2	–10	50%	—	—	45 lbs.
+Extras
+Armor spikes	+50 gp	—	—	—	—	—	—	+10 lbs.
+Gauntlet, locked	8 gp	—	—	special	n/a4	—	—	+5 lbs.
+Shield spikes	+10 gp	—	—	—	—	—	—	+5 lbs.
+1 Weight figures are for armor sized to fit Medium characters. Armor fitted for Small characters weighs half as much, and armor fitted for Large characters weighs twice as much.
+2 When running in heavy armor, you move only triple your speed, not quadruple.
+3 A tower shield can instead grant you cover. See the description.
+4 Hand not free to cast spells.
