@@ -107,7 +107,7 @@ Weapons.getSpecific = function(type) {
         }
     }
 }; //end getSpecific
-     
+
 Weapons.data.meleeSpecial = [
         {'name': 'Bane', 'bonus': 1},
         {'name': 'Defending', 'bonus': 1},
@@ -432,7 +432,10 @@ Weapons.getWeapon = function(type, wClass, final) {
                         'cost': newWeapon.cost + Weapons.data.bonusCost[newWeapon.bonus + special.bonus].cost - Weapons.data.bonusCost[newWeapon.bonus].cost,
                     };
             }
-            break;            
+            else {
+              weapon = newWeapon; //Don't apply the new special
+            }
+            break;
         }
     }
     else if(type == 'medium') {
@@ -471,7 +474,10 @@ Weapons.getWeapon = function(type, wClass, final) {
                         'cost': newWeapon.cost + Weapons.data.bonusCost[newWeapon.bonus + special.bonus].cost - Weapons.data.bonusCost[newWeapon.bonus].cost,
                     };
             }
-            break;            
+            else {
+              weapon = newWeapon; //Don't apply the new special
+            }
+            break;
         }
     }
     else if(type == 'major') {
@@ -505,10 +511,23 @@ Weapons.getWeapon = function(type, wClass, final) {
                         'cost': newWeapon.cost + Weapons.data.bonusCost[newWeapon.bonus + special.bonus].cost - Weapons.data.bonusCost[newWeapon.bonus].cost,
                     };
             }
-            break;            
+            else {
+              weapon = newWeapon; //Don't apply the new special
+            }
+            break;
         }
     }
 
+    if(weapon === undefined || Object.keys(weapon).length === 0) {
+      var err = new Error();
+      console.log(type);
+      console.log(wClass);
+      console.log(final);
+      console.log("roll: " + roll);
+      console.log(newWeapon);
+      console.log(special);
+      return err.stack;
+    }
     var i = weapon.name.indexOf('+');
     if(i != -1) {
         //move the '+X' to the front
