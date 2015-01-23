@@ -124,7 +124,7 @@ Grimoire.getArmorOrShield = function(type, final) {
             item = {
                 'name': special.name + ' ' + item.name,
                 'bonus': special.bonus + item.bonus,
-                'cost': special.cost + item.cost + 
+                'cost': special.cost + item.cost +
                 Armors.getArmors()[special.bonus+item.bonus].cost - Armors.getArmors()[item.bonus].cost
             };
         }

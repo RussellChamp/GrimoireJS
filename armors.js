@@ -1,4 +1,5 @@
 /*global _:false */
+/*global Grimoire:true */
 'use strict';
 
 //TODO: Program the "Roll twice" logic
@@ -83,7 +84,7 @@ Armors.getSpecials = function() {
         {'name': 'Spell resistance (13)', 'bonus': 2, 'cost': 0},
         {'name': 'Improved Slick', 'bonus': 0, 'cost': 15000},
         {'name': 'Improved Shadow', 'bonus': 0, 'cost': 15000},
-        {'name': 'Energy resistance', 'bonus': 0, 'cost': 18000},
+        {'name': 'Energy resistance (' + Grimoire.getEnergyResistance() + ')', 'bonus': 0, 'cost': 18000},
         {'name': 'Ghost touch', 'bonus': 3, 'cost': 0},
         {'name': 'Invulnerability', 'bonus': 3, 'cost': 0},
         {'name': 'Moderate Fortification', 'bonus': 3, 'cost': 0},
@@ -91,19 +92,20 @@ Armors.getSpecials = function() {
         {'name': 'Wild', 'bonus': 3, 'cost': 0},
         {'name': 'Slick, greater', 'bonus': 0, 'cost': 33750},
         {'name': 'Shadow, greater', 'bonus': 0, 'cost': 33750},
-        {'name': 'Improved Energy resistance', 'bonus': 0, 'cost': 42000},
+        {'name': 'Improved Energy resistance (' + Grimoire.getEnergyResistance() + ')', 'bonus': 0, 'cost': 42000},
         {'name': 'Spell resistance (17)', 'bonus': 4, 'cost': 0},
         {'name': 'Etherealness', 'bonus': 0, 'cost': 49000},
         {'name': 'Undead controlling', 'bonus': 0, 'cost': 49000},
         {'name': 'Fortification, heavy', 'bonus': 5, 'cost': 0},
         {'name': 'Spell resistance (19)', 'bonus': 5, 'cost': 0},
-        {'name': 'Energy resistance, greater', 'bonus': 0, 'cost': 66000}
+        {'name': 'Energy resistance, greater (' + Grimoire.getEnergyResistance() + ')', 'bonus': 0, 'cost': 66000}
         //100    Roll again twice
     ];
 };
 
 Armors.getSpecial = function(type) {
     var roll = _.random(1,100);
+    var s1, s2;
     if(type == 'minor') {
         switch(true) {
             case (roll <= 25): return Armors.getSpecials()[0];
@@ -113,7 +115,10 @@ Armors.getSpecial = function(type) {
             case (roll <= 96): return Armors.getSpecials()[4];
             case (roll <= 97): return Armors.getSpecials()[5];
             case (roll <= 99): return Armors.getSpecials()[6];
-            case (roll <= 100): /*roll twice*/ break;
+            case (roll <= 100): //roll twice
+            s1 = Armors.getSpecial('minor');
+            s2 = Armors.getSpecial('minor');
+            return {'name': s1.name + ' ' + s2.name, 'bonus': s1.bonus + s2.bonus};
         }
     }
     else if(type == 'medium') {
@@ -131,7 +136,10 @@ Armors.getSpecial = function(type) {
             case (roll <= 89): return Armors.getSpecials()[10];
             case (roll <= 94): return Armors.getSpecials()[11];
             case (roll <= 99): return Armors.getSpecials()[12];
-            case (roll <= 100): /*roll twice*/ break;
+            case (roll <= 100): //roll twice
+            s1 = Armors.getSpecial('medium');
+            s2 = Armors.getSpecial('medium');
+            return {'name': s1.name + ' ' + s2.name, 'bonus': s1.bonus + s2.bonus};
         }
     }
     else if(type == 'major') {
@@ -155,17 +163,26 @@ Armors.getSpecial = function(type) {
             case (roll <= 92): return Armors.getSpecials()[19];
             case (roll <= 94): return Armors.getSpecials()[20];
             case (roll <= 99): return Armors.getSpecials()[21];
-            case (roll <= 100): /*roll twice*/ break;
+            case (roll <= 100): //roll twice
+            s1 = Armors.getSpecial('major');
+            s2 = Armors.getSpecial('major');
+            return {'name': s1.name + ' ' + s2.name, 'bonus': s1.bonus + s2.bonus};
         }
     }
     if(['minor','medium','major'].indexOf(type) >= 0 && roll == 100) {
         var special1 = Armors.getSpecial(type);
         var special2 = Armors.getSpecial(type);
-        //there exists a possibility of getting the same bonus or a bonus over +10
+        //there exists a possibility of getting the same bonus
         //this is hilarious and has not been fixed
-        return {'name': special1.name + ' ' + special2.name,
-                'bonus': special1.bonus + special2.bonus,
-                'cost': special1.cost + special2.cost
-            };
+        if(special1.bonus + special2.bonus <= 10) {
+          return {'name': special1.name + ' ' + special2.name,
+                  'bonus': special1.bonus + special2.bonus,
+                  'cost': special1.cost + special2.cost
+              };
+        }
+        else {
+          //return the special with the better bonus.
+          return (special1.bonus > special2.bonus ? special1 : special2);
+        }
     }
 };

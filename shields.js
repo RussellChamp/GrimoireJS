@@ -1,4 +1,5 @@
 /*global _:false */
+/*global Grimoire:true */
 'use strict';
 
 //TODO: Program the "Roll twice" logic
@@ -77,18 +78,18 @@ Shields.getSpecials = function() {
         {'name': 'Arrow deflection', 'bonus': 2, 'cost': 0},
         {'name': 'Animated', 'bonus': 2, 'cost': 0},
         {'name': 'Spell resistance (13)', 'bonus': 2, 'cost': 0},
-        {'name': 'Energy resistance', 'bonus': 0, 'cost': 18000},
+        {'name': 'Energy resistance (' + Grimoire.getEnergyResistance() + ')', 'bonus': 0, 'cost': 18000},
         {'name': 'Ghost touch', 'bonus': 3, 'cost': 0},
         {'name': 'Moderate Fortification', 'bonus': 3, 'cost': 0},
         {'name': 'Spell resistance (15)', 'bonus': 3, 'cost': 0},
         {'name': 'Wild', 'bonus': 3, 'cost': 0},
-        {'name': 'Improved Energy resistance', 'bonus': 0, 'cost': 42000},
+        {'name': 'Improved Energy resistance (' + Grimoire.getEnergyResistance() + ')', 'bonus': 0, 'cost': 42000},
         {'name': 'Spell resistance (17)', 'bonus': 4, 'cost': 0},
         {'name': 'Undead controlling', 'bonus': 0, 'cost': 49000},
         {'name': 'Fortification, heavy', 'bonus': 5, 'cost': 0},
         {'name': 'Reflecting', 'bonus': 5, 'cost': 0},
         {'name': 'Spell resistance (19)', 'bonus': 5, 'cost': 0},
-        {'name': 'Energy resistance, greater', 'bonus': 0, 'cost': 6600}
+        {'name': 'Energy resistance, greater (' + Grimoire.getEnergyResistance() + ')', 'bonus': 0, 'cost': 6600}
         ];
 };
 
@@ -151,9 +152,15 @@ Shields.getSpecial = function(type) {
         var special2 = Shields.getSpecial(type);
         //there exists a possibility of getting the same bonus or a bonus over +10
         //this is hilarious and has not been fixed
-        return {'name': special1.name + ' ' + special2.name,
-                'bonus': special1.bonus + special2.bonus,
-                'cost': special1.cost + special2.cost
-            };
+        if(special1.bonus + special2.bonus <= 10) {
+            return {'name': special1.name + ' ' + special2.name,
+                    'bonus': special1.bonus + special2.bonus,
+                    'cost': special1.cost + special2.cost
+                };
+        }
+        else {
+          //return the special with the better bonus.
+          return (special1.bonus > special2.bonus ? special1 : special2);
+        }
     }
 };
