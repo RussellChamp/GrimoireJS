@@ -346,20 +346,20 @@ Intelligence.getItemIntelligence = function(basePrice) {
     item.cost = cost;
     item.print = function() {
         var retStr = 'Alignment: ' + this.alignment + 
-                '; Stats: Ego ' + this.ego + ' Int ' + this.intScore + ' Cha ' + this.chaScore + ' Wis ' + this.wisScore +
-                '; Communication: ' + this.communication.description;
-        this.languages.forEach(function(l, index) { retStr += ((index === 0) ? '; Languages: ' : ', ') + l;});
-        retStr += '; Senses: ' + basicSenses.description + (!specialSenses.description) ? '' : (', ' + specialSenses.description);
+                ';Stats: Ego ' + this.ego + ' Int ' + this.intScore + ' Cha ' + this.chaScore + ' Wis ' + this.wisScore +
+                ';Communication: ' + this.communication.description;
+        this.languages.forEach(function(l, index) { retStr += ((index === 0) ? ';Languages: ' : ', ') + l;});
+        retStr += ';Senses: ' + basicSenses.description + (!specialSenses.description) ? '' : (', ' + specialSenses.description);
         this.powers.forEach(function(p, index) { 
-            retStr += ((index === 0) ? '; Powers: ' : ', ') + p.description;
+            retStr += ((index === 0) ? ';Powers: ' : ', ') + p.description;
         });
         if(this.purpose.description) {
-            retStr += '; Purpose: ' + this.purpose.description;
+            retStr += ';Purpose: ' + this.purpose.description;
             this.dedicatedPowers.forEach(function(p, index) { 
-                retStr += ((index === 0) ? ', Dedicated Powers: ' : ', ') + p.description;
+                retStr += ((index === 0) ? ';Dedicated Powers: ' : ', ') + p.description;
             });
         }
-        retStr += '; Cost: ' + this.cost;
+        retStr += ';Cost: ' + this.cost;
         return retStr;
     };
 

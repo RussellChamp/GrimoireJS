@@ -26,5 +26,12 @@ Grimoire.getDeities = function() {
 Grimoire.getDeity = function(alignment1, alignment2) {
     if(alignment1 === undefined) alignment1 = _.sample(['lawful', 'neutral', 'chaotic']);
     if(alignment2 === undefined) alignment2 = _.sample(['good', 'neutral', 'evil']);
-    return _.sample(Grimoire.getDeities()[alignment1][alignment2]);
+    var alignmentString = "";
+    if(alignment1 === 'neutral' && alignment2 === 'neutral') {
+        alignmentString = ' (true neutral)';
+    }
+    else {
+        alignmentString = ' (' + alignment1 + ' ' + alignment2 + ')';
+    }
+    return _.sample(Grimoire.getDeities()[alignment1][alignment2]) + alignmentString;
 };
