@@ -1,4 +1,4 @@
-/*global _:false */
+/*global _:false, console:false */
 /*global Grimoire:true, Intelligence:true */
 
 'use strict';
@@ -523,7 +523,7 @@ Weapons.getWeapon = function(type, wClass, final) {
       console.log(type);
       console.log(wClass);
       console.log(final);
-      console.log("roll: " + roll);
+      console.log('roll: ' + roll);
       console.log(newWeapon);
       console.log(special);
       return err.stack;
@@ -540,6 +540,7 @@ Weapons.getWeapon = function(type, wClass, final) {
     if(final === true && _.random(1,100) === 1) {
         weapon.name = 'Intelligent ' + weapon.name;
         weapon.intelligence = Intelligence.getItemIntelligence(weapon.cost);
+        weapon.cost += weapon.intelligence.cost;
     }
 
     if(final === true && _.random(1,100) <= 30) {

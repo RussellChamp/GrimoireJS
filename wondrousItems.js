@@ -1,4 +1,6 @@
 /*global _:false */
+/*global Intelligence:false */
+"use strict";
 var WondrousItems = {};
 WondrousItems.getAllItems = function() {
     return [
@@ -488,25 +490,28 @@ WondrousItems.getItem = function(type, source) {
         //spell = _.sample(sourceSpells[type][level]);
     }
     
-    //I *know* that the APG has it's own roll table but I really don't care...
+    //I *know* that the APG has it"s own roll table but I really don"t care...
     item = _.sample(sourceItems);
 
     //remember that consumable items should NEVER have intelligence
-    if(_.random(1,100) === 1) 
+    if(_.random(1,100) === 1) {
         item.name = "Intelligent " + item.name;
+        item.intelligence = Intelligence.getItemIntelligence(item.cost);
+        item.cost += item.intelligence.cost;
+    }
     if(_.random(1,100) <= 20)
         item.name += " with a clue as to its purpose";
     return item;
 };
 
 WondrousItems.getMinor = function() {
-    return this.getItem('minor');
+    return this.getItem("minor");
 };
 
 WondrousItems.getMedium = function() {
-    return this.getItem('medium');
+    return this.getItem("medium");
 };
 
 WondrousItems.getMajor = function() {
-    return this.getItem('major');
+    return this.getItem("major");
 };
