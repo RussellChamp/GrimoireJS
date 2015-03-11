@@ -7,6 +7,7 @@
         {"name": "Rings", "source": "CRB/Rings.json"},
         {"name": "Rods",  "source": "CRB/Rods.json"},
         {"name": "Spells", "source": "CRB/Spells.json"},
+        {"name": "Staves", "source": "CRB/Staves.json"},
         {"name": "Wands"},
         {"name": "Wondrous Items",  "source": "CRB/Wondrous Items.json"}
         ]

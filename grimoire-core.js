@@ -195,8 +195,8 @@ var Grimoire = function(config) {
         //***EVERYTHING ELSE***
         //*********************
         else {
-            if(type == TYPES.RODS && quality == QUALITIES.MINOR) {
-                console.log('Error! There are no ' + QUALITIES.MINOR + ' ' + TYPES.RODS);
+            if((type == TYPES.RODS || type == TYPES.STAVES) && quality == QUALITIES.MINOR) {
+                console.log('Error! There are no ' + QUALITIES.MINOR + ' ' + type);
                 return;
             }
             //Determine which source to use
@@ -272,7 +272,10 @@ var Grimoire = function(config) {
             source = selectSource(sources, quality, itemType, options);
             item = _.clone(chance.pick(source.data[itemType].data[quality]));
             item.source = source.shortName;
-            if(options.allIntelligent || (!options.disableIntelligent && chance.d100() == 1)) {
+            
+            //make an intelligent item if we either want ALL intelligent items
+            //OR intelligent items are NOT disabled AND we roll under the chance threshold
+            if(options.allIntelligent || (!options.disableIntelligent && chance.d100() <= (options.intelligenceChance || 1))) {
                 item.intelligence = 'WOOHOO I AM INTELLIGENT!';
             }
         }
