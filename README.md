@@ -3,7 +3,6 @@ GrimoireJS
 
 GrimoireJS: Magic item generator for the Pathfinder tabletop RPG
 written by Russell Champoux
-last updated 1/20/14
 
 This project contains a series of function under the 'Grimoire' module.
  * The primary file to include is grimoire.rb

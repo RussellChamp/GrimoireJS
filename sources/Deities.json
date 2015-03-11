@@ -1,0 +1,19 @@
+{
+    "data": {
+        "lawful": {
+            "good"    : ["Erastil", "Iomedae", "Torag"],
+            "neutral" : ["Abadar", "Irori"],
+            "evil"    : ["Asmodeus", "Zon-Kuthon"]
+            },
+        "neutral": {
+            "good"    : ["Sarenrae"],
+            "neutral" : ["Gozreh", "Pharasma", "Nethys"],
+            "evil"    : ["Urgathoa", "Norgorber"]
+            },
+        "chaotic" : {
+            "good"    : ["Desna", "Cayden Cailean"],
+            "neutral" : ["Gorum", "Calistria"],
+            "evil"    : ["Lamashtu", "Rovagug"]
+            }
+        }
+}
