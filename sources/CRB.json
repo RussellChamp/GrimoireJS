@@ -1,0 +1,11 @@
+{
+    "_todo": "Add the following items Armor and Shields, Potions, Rods, Scrolls, Staves, Wands, Weapons",
+    "name": "Core Rule Book",
+    "shortName": "CRB",
+    "types": [
+        "Rings",
+        "Rods",
+        "Spells",
+        "Wondrous Items"
+        ]
+}
