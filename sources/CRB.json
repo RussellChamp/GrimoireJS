@@ -3,12 +3,15 @@
     "name": "Core Rule Book",
     "shortName": "CRB",
     "types": [
-        {"name": "Potions", "source": "CRB/Potions.json"},
-        {"name": "Rings", "source": "CRB/Rings.json"},
-        {"name": "Rods",  "source": "CRB/Rods.json"},
-        {"name": "Spells", "source": "CRB/Spells.json"},
-        {"name": "Staves", "source": "CRB/Staves.json"},
+        {"name": "Potions", "source": "sources/CRB/Potions.json"},
+        {"name": "Rings", "source": "sources/CRB/Rings.json"},
+        {"name": "Rods",  "source": "sources/CRB/Rods.json"},
+        {"name": "Spells", "source": "sources/CRB/Spells.json"},
+        {"name": "Scrolls"},
+        {"name": "Staves", "source": "sources/CRB/Staves.json"},
         {"name": "Wands"},
-        {"name": "Wondrous Items",  "source": "CRB/Wondrous Items.json"}
+        {"name": "Weapons", "source": "sources/CRB/Weapons.json"},
+        {"name": "Armor and Shields", "source": "sources/CRB/Armor and Shields.json"},
+        {"name": "Wondrous Items",  "source": "sources/CRB/Wondrous Items.json"}
         ]
 }

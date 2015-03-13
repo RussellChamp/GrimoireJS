@@ -1,6 +1,5 @@
 {
-    "data": {
-    "Arcane": [
+      "Arcane": [
                                         ["Resistance",
             "Acid Splash", "Detect Magic", "Detect Poison", "Read Magic",
             "Daze", "Dancing Lights", "Flare", "Light", "Ray of Frost",
@@ -130,8 +129,8 @@
             "Weird", "Astral Projection", "Energy Drain", "Soul Bind",
             "Wail of the Banshee", "Etherealness", "Shapechange",
             "Time Stop", "Wish"]
-        ], 
-    "Divine" : [
+      ], 
+      "Divine" : [
                                                     ["Bleed",
             "Create Water", "Detect Magic", "Detect Poison", "Guidance",
             "Light", "Mending", "Purify Food and Drink", "Read Magic",
@@ -253,6 +252,5 @@
             "Summon Monster IX", "True Resurrection", "Antipathy",
             "Elemental Swarm", "Foresight", "Regenerate", "Shambler",
             "Shapechange", "Summon Nature's Ally IX", "Sympathy"]
-        ]
-    }
+      ]
 }

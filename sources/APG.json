@@ -2,10 +2,10 @@
     "name": "Advanced Player's Guide",
     "shortName": "APG",
     "types": [
-        {"name": "Rings", "source": "APG/Rings.json"},
-        {"name": "Rods", "source": "APG/Rods.json"},
-        {"name": "Spells", "source": "APG/Spells.json"},
+        {"name": "Rings", "source": "sources/APG/Rings.json"},
+        {"name": "Rods", "source": "sources/APG/Rods.json"},
+        {"name": "Spells", "source": "sources/APG/Spells.json"},
         {"name": "Wands"},
-        {"name": "Wondrous Items", "source": "APG/Wondrous Items.json"}
+        {"name": "Wondrous Items", "source": "sources/APG/Wondrous Items.json"}
     ]
 }

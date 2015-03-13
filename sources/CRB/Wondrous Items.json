@@ -1,5 +1,4 @@
 {
-    "data": {
     "minor": [
     { "name" : "Feather token, anchor", "cost" : 50, "url" : "#feather-token" },
         { "name" : "Universal solvent", "cost" : 50, "url" : "" },
@@ -392,5 +391,4 @@
         { "name" : "Iron flask", "cost" : 170000, "url" : "" },
         { "name" : "Mirror of life trapping", "cost" : 20000, "url" : "" }
         ]
-    }
 }

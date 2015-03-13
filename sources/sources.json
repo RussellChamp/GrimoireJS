@@ -1,3 +1,15 @@
 {
-    "sources": ["CRB.json", "APG.json", "UM.json"]
+    "sources": [
+        "sources/CRB.json",
+        "sources/APG.json",
+        "sources/UM.json",
+        "sources/UC.json"
+    ],
+    "other": [
+        "sources/Banes.json",
+        "sources/Deities.json",
+        "sources/Humanoids.json",
+        "sources/Outsiders.json",
+        "sources/ItemSkills.json"
+    ]
 }

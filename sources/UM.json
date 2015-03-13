@@ -2,6 +2,6 @@
     "name": "Ultimate Magic",
     "shortName": "UM",
     "types": [
-        {"name": "Spells", "source": "UM/Spells.json"}
+        {"name": "Spells", "source": "sources/UM/Spells.json"}
     ]
 }
