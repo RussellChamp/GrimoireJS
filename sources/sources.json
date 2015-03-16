@@ -10,6 +10,10 @@
         "sources/Deities.json",
         "sources/Humanoids.json",
         "sources/Outsiders.json",
-        "sources/ItemSkills.json"
+        "sources/ItemSkills.json",
+        "sources/Languages.json",
+        "sources/ItemPowers.json",
+        "sources/ItemPurposes.json",
+        "sources/ItemDedicatedPowers.json"
     ]
 }

@@ -1,19 +1,19 @@
 {
     "data": {
-        "lawful": {
-            "good"    : ["Erastil", "Iomedae", "Torag"],
-            "neutral" : ["Abadar", "Irori"],
-            "evil"    : ["Asmodeus", "Zon-Kuthon"]
+        "Lawful": {
+            "Good"    : ["Erastil", "Iomedae", "Torag"],
+            "Neutral" : ["Abadar", "Irori"],
+            "Evil"    : ["Asmodeus", "Zon-Kuthon"]
             },
-        "neutral": {
-            "good"    : ["Sarenrae"],
-            "neutral" : ["Gozreh", "Pharasma", "Nethys"],
-            "evil"    : ["Urgathoa", "Norgorber"]
+        "Neutral": {
+            "Good"    : ["Sarenrae"],
+            "Neutral" : ["Gozreh", "Pharasma", "Nethys"],
+            "Evil"    : ["Urgathoa", "Norgorber"]
             },
-        "chaotic" : {
-            "good"    : ["Desna", "Cayden Cailean"],
-            "neutral" : ["Gorum", "Calistria"],
-            "evil"    : ["Lamashtu", "Rovagug"]
+        "Chaotic" : {
+            "Good"    : ["Desna", "Cayden Cailean"],
+            "Neutral" : ["Gorum", "Calistria"],
+            "Evil"    : ["Lamashtu", "Rovagug"]
             }
         }
 }

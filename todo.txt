@@ -1,0 +1,16 @@
+Pathfinder magic item automatic roller
+To do:
+
+* Refactor code into GrimoireCore and resouce JSON objects
+
+* Reformat all the .js data files into JSON resources
+
+* Add roll weights for
+ = CRB
+  - Rings
+ = APG
+  - Rings
+
+* I'm getting a problem where the random number generator is reliably getting the SAME item from a weighted list and I'm not sure why.
+ = This is occuring for getHumanoid, getOutsider, getDeity, and several other lowest level methods
+   when called from higher order functions like getIntelligence or getWeapon

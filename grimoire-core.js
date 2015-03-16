@@ -324,15 +324,20 @@ var Grimoire = function(config) { // jshint ignore:line
         if(itemType == TYPES.SCROLLS) {
             item = self.getScroll(quality, options);
         }
+        //POTIONS
         else if(itemType == TYPES.POTIONS) {
             item = self.getPotion(quality, options);
         }
+        //WANDS
         else if(itemType == TYPES.WANDS) {
             item = self.getWand(quality, options);
         }
         //WONDROUS ITEMS
         else if(itemType == TYPES.WONDROUS_ITEMS) {
             item = self.getWondrousItem(quality, options);
+        }
+        else if(itemType == TYPES.WEAPONS) {
+            item = self.getWeapon(quality, options);
         }
         //EVERYTHING ELSE
         else {
@@ -341,7 +346,6 @@ var Grimoire = function(config) { // jshint ignore:line
 
             //EXCEPTIONS FOR ARMOR_AND_SHEILDS
 
-            //EXCEPTIONS FOR WEAPONS
 
             //CHANCE FOR INTELLIGENT WEAPONS, RINGS, RODS, STAVES, OR WONDROUS ITEMS
             item = self.getWeightedItem(source.data[itemType].data, quality);
@@ -355,6 +359,8 @@ var Grimoire = function(config) { // jshint ignore:line
         return item;
     };
 
+    //options.maxRoll - override the maximul value that can be rolled for these items
+    //                  default is the sum of the quality weights
     this.getWeightedItem = function(itemData, quality, options) {
         options = options ? options : {};
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
@@ -374,7 +380,7 @@ var Grimoire = function(config) { // jshint ignore:line
                 }
             }
         console.error('Could not find valid '+quality+'item in',itemData);
-    }
+    };
 
     this.getSpells = function(level, count, options) {
         options = options ? options : {};
@@ -470,28 +476,13 @@ var Grimoire = function(config) { // jshint ignore:line
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
         var cost = [25, 50, 300, 750];
         
-        if(!level || level < 0 || level > 4) {
-            var roll = chance.d100();
-            if(quality == QUALITIES.MINOR) {
-                switch(true) {
-                    case (roll <= 20): level = 0; break;
-                    case (roll <= 60): level = 1; break;
-                    case (roll <= 100): level = 2; break;
-                }
-            }
-            else if(quality == QUALITIES.MEDIUM) {
-                switch(true) {
-                    case (roll <= 20): level = 1; break;
-                    case (roll <= 60): level = 2; break;
-                    case (roll <= 100): level = 3; break;
-                }
-            }
-            else if(quality == QUALITIES.MAJOR) {
-                switch(true) {
-                    case (roll <= 20): level = 2; break;
-                    case (roll <= 100): level = 3; break;
-                }
-            }
+        if(!level || level < 0 || level > 3) {
+            var weights = {};
+            weights[QUALITIES.MINOR]  = [20, 40, 40,  0];
+            weights[QUALITIES.MEDIUM] = [ 0, 20, 40, 40];
+            weights[QUALITIES.MAJOR]  = [ 0,  0, 20, 80];
+
+            level = chance.weighted([0,1,2,3], weights[quality]);
         }
         options.typeOverride = TYPES.POTIONS;
         options.potionLevel = level;
@@ -514,26 +505,12 @@ var Grimoire = function(config) { // jshint ignore:line
 
 
         if(!level || level < 0 || level > 4) {
-            var roll = chance.d100();
-            if(quality == QUALITIES.MINOR) {
-                switch(true) {
-                    case (roll <= 5): level = 0; break;
-                    case (roll <= 60): level = 1; break;
-                    case (roll <= 100): level = 2; break;
-                }
-            }
-            else if(quality == QUALITIES.MEDIUM) {
-                switch(true) {
-                    case (roll <= 60): level = 2; break;
-                    case (roll <= 100): level = 3; break;
-                }
-            }
-            else if(quality == QUALITIES.MAJOR) {
-                switch(true) {
-                    case (roll <= 60): level = 3; break;
-                    case (roll <= 100): level = 4; break;
-                }
-            }
+            var weights = {};
+            weights[QUALITIES.MINOR]  = [ 5, 55, 40,  0,  0];
+            weights[QUALITIES.MEDIUM] = [ 0,  0, 60, 40,  0];
+            weights[QUALITIES.MAJOR]  = [ 0,  0,  0, 60, 40];
+
+            level = chance.weighted([0,1,2,3,4], weights[quality]);
         }
 
         options.wandLevel = level;
@@ -562,7 +539,8 @@ var Grimoire = function(config) { // jshint ignore:line
         //make an intelligent item if we either want ALL intelligent items
         //OR intelligent items are NOT disabled AND we roll under the chance threshold
         if(options.allIntelligent || (!options.disableIntelligent && chance.d100() <= (options.intelligenceChance || 1))) {
-            item.intelligence = 'WOOHOO I AM INTELLIGENT!';
+            item.intelligence = self.getIntelligence(item.cost, options); //'WOOHOO I AM INTELLIGENT!';
+            item.cost += item.intelligence.cost;
         }
         return item;
     };
@@ -591,6 +569,12 @@ var Grimoire = function(config) { // jshint ignore:line
         bane = bane.replace(/GET_HUMANOID_TYPE/, self.getHumanoid(options));
         bane = bane.replace(/GET_OUTSIDER_TYPE/, self.getOutsider(options));
         return bane;
+    };
+    this.getEnergyType = function(options) {
+        options = options ? options : {};
+        var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
+
+        return chance.pick(_.values(ENERGY_TYPES));
     };
 
     //type is 'armor', 'shield', 'melee', or 'ranged'
@@ -633,8 +617,10 @@ var Grimoire = function(config) { // jshint ignore:line
         } while(options.excludeSpecials.indexOf(special) != -1); //if we have a duplicate, try again
 
         //EXCEPTION for Bane special
-        if(special.name.indexOf('GET_BANE_TYPE')) {
+        if(/GET_BANE_TYPE/.test(special.name)) {
             special.name = special.name.replace(/GET_BANE_TYPE/, self.getBane(options));
+        } else if(/GET_ENERGY_RESISTANCE_TYPE/.test(special.name)) {
+            special.name = special.name.replace(/GET_ENERGY_RESISTANCE_TYPE/, self.getEnergyType(options));
         }
 
         return [special]; //could contain one or more specials
@@ -767,11 +753,24 @@ var Grimoire = function(config) { // jshint ignore:line
         //30% chance to be glowing
         if(options.allIntelligent || 
             (!options.disableIntelligent && chance.d100() <= (options.intelligenceChance || 1))) {
-            weapon.intelligence = 'WOOHOO I AM INTELLIGENT!';
+            var cost = weapon.baseCost + 2000 * Math.pow(weapon.bonus, 2);
+            weapon.intelligence = self.getIntelligence(cost, options); //'WOOHOO I AM INTELLIGENT!';
+            weapon.cost += weapon.intelligence.cost;
         }
         if(!options.disableGlowing && chance.d100() <= (options.glowingChance || 30)) {
             weapon.glowing = true;
         }
+        weapon.print = function() {
+            var ret = 'Name: ';
+            ret += this.glowing ? 'Glowing ' : '';
+            ret += this.bonus > 0 ? ('+' + this.bonus + ' ') : '';
+            ret += this.specials.length > 0 ? _.map(this.specials, function(s) { return s.name;}).join(', ') + ' ' : '';
+            ret += this.name ? this.name : (this.type + ' weapon');
+            ret += ';';
+            ret += this.intelligence.print ? 'Intelligence: [' + this.intelligence.print() + '];' : '';
+            ret += 'Cost: ' + (this.baseCost + 2000 * Math.pow(weapon.bonus, 2) + this.intelligence.cost) + 'gp';
+            return ret;
+        };
 
         return weapon;
     };
@@ -802,6 +801,273 @@ var Grimoire = function(config) { // jshint ignore:line
             alignment = 'True Neutral';
         }
         return alignment;
+    };
+
+    //options.cl can be Chaotic, Neutral, or Lawful
+    //options.ge can be Good, Neutral, or Evil
+    this.getDeity = function(options) {
+        options = options ? options : {};
+        var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
+        var cl = options.cl || chance.pick(['Chaotic', 'Neutral', 'Lawful']);
+        var ge = options.ge || chance.pick(['Good', 'Neutral', 'Evil']);
+        var deity = {};
+        deity.name = chance.pick(self.Deities.data[cl][ge]);
+        deity.alignment = (cl == 'Neutral' && ge == 'Neutral') ? 'True Neutral' : (cl + ' ' + ge);
+
+        return deity;
+    };
+
+    //baseCost is the base cost of the item the intelligence is being made for. 
+    //This directly affects the intelligence's ego score!
+    //baseCost also directly affects the probability of the number of special abilities an intelligence will have
+    //options.numPowers
+    //options.purposeChance
+    //options.numDedicatedPowers
+    this.getIntelligence = function(baseCost, options) {
+        baseCost = baseCost || 0;
+        options = options || {};
+        var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
+        var i = {}; //intelligence object. we'll be referencing this a LOT
+
+
+        //***BASE VALUES***
+        i.cost = 500; //base starting cost
+        i.ego = 0;
+        //Base cost ego modifier
+        switch(true) {
+            case (baseCost <= 1000): i.ego += 0; break;
+            case (baseCost <= 5000): i.ego += 1; break;
+            case (baseCost <= 10000): i.ego += 2; break;
+            case (baseCost <= 20000): i.ego += 3; break;
+            case (baseCost <= 50000): i.ego += 4; break;
+            case (baseCost <= 100000): i.ego += 6; break;
+            case (baseCost <= 200000): i.ego += 8; break;
+            case (baseCost  > 200000): i.ego += 12; break;
+        }
+
+
+        //***ITEM ABILITY STATS***
+        var statScores = [
+                            {'score': 10, 'costMod': 0, 'egoMod': 0},
+                            {'score': 11, 'costMod': 200, 'egoMod': 0},
+                            {'score': 12, 'costMod': 500, 'egoMod': 1},
+                            {'score': 13, 'costMod': 700, 'egoMod': 1},
+                            {'score': 14, 'costMod': 1000, 'egoMod': 2},
+                            {'score': 15, 'costMod': 1400, 'egoMod': 2},
+                            {'score': 16, 'costMod': 2000, 'egoMod': 3},
+                            {'score': 17, 'costMod': 2800, 'egoMod': 3},
+                            {'score': 18, 'costMod': 4000, 'egoMod': 4},
+                            {'score': 19, 'costMod': 5200, 'egoMod': 4},
+                            {'score': 20, 'costMod': 8000, 'egoMod': 5},
+                        ];
+        var statWeights = [10, 10, 20, 10, 20, 5, 5, 5, 5, 5, 5];
+
+        i.stats = {};
+        ['intelligence', 'wisdom', 'charisma'].forEach(function(stat) {
+            var score = chance.weighted(statScores, statWeights);
+            i.stats[stat] = score.score;
+            i.cost += score.costMod;
+            i.ego += score.egoMod;
+        });
+
+        i.alignment = self.getAlignment(options);
+
+
+        //***ITEM COMMUNICATION AND SENSES***
+        //get communication ability for the item.
+        var communicationTypes = [
+            {'description': 'Empathy', 'costMod': 0, 'egoMod': 0},
+            {'description': 'Speech', 'costMod': 500, 'egoMod': 0},
+            {'description': 'Telepathy', 'costMod': 1000, 'egoMod': 1},
+        ];
+        var communicationWeights = [3,4,3]; //There was no roll table so I made this up
+        var communication = chance.weighted(communicationTypes, communicationWeights);
+
+        //get senses for the item. there was no roll table so I made this up
+        var basicSenses = [
+            {'description': 'Senses (30 ft.)', 'costMod': 0, 'egoMod': 0},
+            {'description': 'Senses (60 ft.)', 'costMod': 500, 'egoMod': 0},
+            {'description': 'Senses (120 ft.)', 'costMod': 1000, 'egoMod': 0},
+        ];
+        var basicSensesWeights = [5,3,2]; //There was no roll table so I made this up
+        var basicSense = chance.weighted(basicSenses, basicSensesWeights);
+
+        //get special senses for the item. 
+        var specialSenses = [
+            {'description': '', 'costMod': 0, 'egoMod': 0},
+            {'description': 'Darkvision', 'costMod': 500, 'egoMod': 0},
+            {'description': 'Blindsense', 'costMod': 5000, 'egoMod': 1},
+            {'description': 'Read languages', 'costMod': 1000, 'egoMod': 1},
+            {'description': 'Read magic', 'costMod': 2000, 'egoMod': 1},
+        ];
+        //There was no roll table so I made this up and limited it to only 1 special per item
+        var specialSensesWeights = [50, 20, 5, 15, 10];
+        var specialSense = chance.weighted(specialSenses, specialSensesWeights);
+        
+        i.communication = communication.description;
+        i.senses = basicSense.description + (specialSense.description ? ', ' + specialSense.description : '');
+
+        i.cost += communication.costMod + basicSense.costMod + specialSense.costMod;
+        i.ego += communication.egoMod + basicSense.egoMod + specialSense.egoMod;
+
+
+        //***ITEM POWERS***
+        //Get item powers!
+        var powerCountWeights = [1,1,1,1,1];
+        //The probability for more powers is directly related to the base cost of the item
+        //I made up these roll weights. references the same basecost as the basic ego modifier
+        switch(true) {
+            case (baseCost <= 1000):   powerWeights = [6,4,0,0,0]; break;
+            case (baseCost <= 5000):   powerWeights = [3,4,3,0,0]; break;
+            case (baseCost <= 10000):  powerWeights = [2,3,4,1,0]; break;
+            case (baseCost <= 20000):  powerWeights = [1,3,4,2,0]; break;
+            case (baseCost <= 50000):  powerWeights = [0,2,4,3,1]; break;
+            case (baseCost <= 100000): powerWeights = [0,1,3,4,2]; break;
+            case (baseCost <= 200000): powerWeights = [0,0,2,5,3]; break;
+            case (baseCost  > 200000): powerWeights = [0,0,0,6,4]; break;
+        }
+
+
+        var powerWeights = _.map(self.ItemPowers, function(p) { return p.weight; });
+
+        i.powers = [];
+        var reSkill = /GET_ITEM_SKILL/;
+        var reSpell = /GET_SPELL_LEVEL_(.)/; //for spell levels 0-9
+
+        //Another option would be to do this with _.sample but it does not support weights
+        _.times((options.numPowers || chance.weighted(_.range(1,6), powerCountWeights)), function() {
+            var power = {};
+            do {
+                power = _.clone(chance.weighted(_.clone(self.ItemPowers), powerWeights));
+                if(reSkill.test(power.description)) {
+                    power.description = power.description.replace(reSkill, chance.pick(self.ItemSkills).name);
+                }
+                else if (reSpell.test(power.description)) {
+                    var spellLevel = reSpell.exec(power.description)[1];
+                    power.spell = self.getSpell(spellLevel, options); //add the spell onto the power for later reference
+                    power.description = power.description.replace(reSpell, power.spell.name);
+                }
+            } while(_.findWhere(i.powers, {'description': power.description}) && !power.repeatable); //power exists in item powers and is not repeatable 
+            if(_.findWhere(i.powers, {'description': power.description})) { //if we selected an existing but repeatable power
+                //add the new power values to the old power
+                var oldPower = _.findWhere(i.powers, {'description': power.description});
+                oldPower.costMod += power.costMod;
+                oldPower.egoMod  += power.egoMod;
+                oldPower.value   += power.value;
+            }
+            else {
+                i.powers.push(power);
+            }            
+        });
+        
+        //Set for the next section
+        var bonusLanguages = 0; 
+
+        //Finalize powers
+        i.powers.forEach(function(p) {
+            p.description = p.description.replace(/#/, p.value);
+            i.ego += p.egoMod;
+            i.cost += p.costMod;
+
+            if(/Linguistics/.test(p.description)) { //check if we got any ranks in linguistics
+                bonusLanguages += p.value;
+            }
+
+            //clean up the power
+            delete p.value;
+            delete p.egoMod;
+            delete p.costMod;
+            delete p.weight;
+            delete p.repeatable;
+            //final power should only have description and spell
+        });
+
+
+        //***ITEM BONUS LANGUAGES***
+        i.languages = ['Common']; //ALL intelligent items know Common
+        //extra languages are based on intelligence and ranks in Linguistics
+        bonusLanguages += Math.floor((i.stats.intelligence-10)/2);
+        //pick is safe even if we have more bonusLanguages than exist
+        i.languages.concat(chance.pick(self.Languages.data, bonusLanguages));
+
+
+        //***ITEM PURPOSE***
+        //there was NO roll chart for determining if an item has a purpose so I made this up
+        //I figure 30% of the time sounds good
+        i.purpose = '';
+        i.dedicatedPowers = [];
+
+        if(chance.d100() <= (options.purposeChance || 30)) {
+            var reBane = /GET_BANE/;
+            var reHumOrOut = /GET_HUMANOID_OR_OUTSIDER_TYPE/;
+            var reDeity = /GET_DEITY/;
+            //get purpose
+            var purpose = chance.weighted(_.clone(self.ItemPurposes), 
+                            _.map(self.ItemPurposes, function(p) { return p.weight; }));
+            i.purpose = purpose.description;
+            i.ego += purpose.egoMod;
+
+            if(reBane.test(i.purpose)) {
+                i.purpose = i.purpose.replace(reBane, self.getBane(options));
+            }
+            else if(reHumOrOut.test(i.purpose)) {
+                i.purpose = i.purpose.replace(reHumOrOut,
+                    chance.pick(['Humanoids (' + self.getHumanoid(options) + ')', 
+                        'Outsiders (' + self.getOutsider(options) + ')']));
+            }
+            else if(reDeity.test(i.purpose)) {
+                var deity = self.getDeity(options);
+                i.purpose = i.purpose.replace(reDeity, deity.name + ' (' + deity.alignment + ')');
+            }
+
+            //console.log(i.purpose.description);
+            i.dedicatedPowers = []; //chance.pick()
+            //I decided that purposed items get between 1-3 dedicated powers, heavily leaning on 1
+            var numDedicatedPowers = options.numDedicatedPowers || chance.weighted([1,2,3], [7,2,1]);
+            _.times(numDedicatedPowers, function() {
+                var power = {};
+                do {
+                    power = _.clone(chance.weighted(self.ItemDedicatedPowers, 
+                        _.map(self.ItemDedicatedPowers, function(p) { return p.weight; })));
+                    
+                    if (reSpell.test(power.description)) { //as in the normal powers
+                        var spellLevel = reSpell.exec(power.description)[1];
+                        power.spell = self.getSpell(spellLevel, options); //add the spell onto the power for later reference
+                        power.description = power.description.replace(reSpell, power.spell.name);
+                    }
+                //don't allow for duplicate dedicated powers
+                } while(_.findWhere(i.dedicatedPowers, {'description': power.description}));
+                //finalize dedicated power
+                i.cost += power.costMod;
+                i.ego  += power.egoMod;
+                delete power.costMod;
+                delete power.egoMod;
+                delete power.weight;
+                i.dedicatedPowers.push(power);
+            });
+        }
+
+        //***PRINT FUNCTION***
+        i.print = function() {
+            var ret = '';
+            ret += 'Alignment: ' + this.alignment + ';';
+            ret += 'Stats: Ego ' + this.ego + ', Int ' + this.stats.intelligence + ', ' +
+                    'Wis ' + this.stats.wisdom + ', ' +
+                    'Cha ' + this.stats.charisma + ';';
+            ret += 'Communication: ' + this.communication + ' (' + this.languages.join(',' ) + ');';
+            ret += 'Senses: ' + this.senses + ';';
+            ret += 'Powers: ' + _.map(this.powers, function(p) { return p.description; }).join(', ') + ';';
+            if(this.purpose) {
+                ret += 'Purpose: ' + this.purpose + ';';
+                ret += 'Dedicated Powers: ' + _.map(this.dedicatedPowers, function(p) {return p.description; }).join(', ') + ';';
+            }            
+            ret += 'Cost: ' + i.cost + 'gp';
+
+            return ret;
+
+        };
+
+        return i; //object intelligence
     };
 
 };
