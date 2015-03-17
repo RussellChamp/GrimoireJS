@@ -83,6 +83,10 @@ var Grimoire = function(config) { // jshint ignore:line
     this.chance = (config && config.chance ? config.chance : config && config.seed ? new Chance(config.seed) : new Chance());
 
     this.SOURCES = [];
+    $.ajaxSetup({
+        async: false //A project that works now is better than one that doesn't exist.
+                     //I MUST come back and revisit this with promises later
+    });
     $.getJSON('sources/sources.json', function(sources) { 
         sources.sources.forEach(function(url) {
             $.getJSON(url, function(source) {
@@ -118,11 +122,18 @@ var Grimoire = function(config) { // jshint ignore:line
                 console.error('getJSON failed to load '+url+', status: '+textStatus+', error: '+error);
             });
         });
+        //LOADED ALL SOURCES AND DATA
         })
         .fail(function(err) {
             console.error('Failed to load sources list:', err);
         });
+    $.ajaxSetup({
+        async: true
+    });
 
+    //options.sources manually select which sources you want to use
+    //                  will not use sources that are marked as disabled
+    //options.types manually specify what types you want to get
     this.getItems = function(quality, count, options) {
         options = options ? options : {};
         var sources = options.sources ? options.sources : self.SOURCES;
@@ -150,7 +161,7 @@ var Grimoire = function(config) { // jshint ignore:line
             var item = self.getItem(quality, options);
             if(item) {
                 items.push(item);
-                console.log(item);
+                //console.log(item);
             }
         });
         return items;
@@ -209,8 +220,8 @@ var Grimoire = function(config) { // jshint ignore:line
         //***SPELLS AND SCROLLS AND WANDS***
         //**********************************
         else if(type == TYPES.SCROLLS || type == TYPES.SPELLS || type == TYPES.WANDS) {
-            if(!options.spellType || !options.spellLevel) {
-                console.error('Error selecting source for Spells. Invalid options', options);
+            if(!options.spellType || options.spellLevel > 9 || options.spellLevel < 0) {
+                console.error('Error selecting source for Spells. Invalid options', type, options);
             }
             sourceWeights = _.map(sources, function(source) {
                 //Check that we have a spells section
@@ -271,7 +282,7 @@ var Grimoire = function(config) { // jshint ignore:line
                     //AND have at least one item of that quality with a probability weight
                     if(source.data[type] && source.data[type].enabled) {
                         return _.filter(source.data[type].data,
-                        function(item) { 
+                        function(item) {
                             return item.weight[quality] > 0; 
                         }).length; 
                     }
@@ -336,20 +347,36 @@ var Grimoire = function(config) { // jshint ignore:line
         else if(itemType == TYPES.WONDROUS_ITEMS) {
             item = self.getWondrousItem(quality, options);
         }
+        //WEAPONS
         else if(itemType == TYPES.WEAPONS) {
             item = self.getWeapon(quality, options);
         }
-        //EVERYTHING ELSE
+        //ARMOR AND SHIELDS
+        else if(itemType == TYPES.ARMOR_AND_SHIELDS) {
+            item = self.getArmorOrShield(quality, options);
+        }
+        //RINGS
+        else if(itemType == TYPES.RINGS) {
+            item = self.getRing(quality, options);
+        }
+        //RODS
+        else if(itemType == TYPES.RODS) {
+            item = self.getRod(quality, options);
+        }
+        //STAVES
+        else if(itemType == TYPES.STAVES) {
+            item = self.getStaff(quality, options);
+        }
+        //EVERYTHING ELSE NOT LISTED.
+        //All TYPES should have their own 'get' method but this allows for additional types to be added
+        // as long as they follow the data structure standard of source.data.type and contain weights
         else {
             //Select the item source based on the quality and item type
             source = selectSource(sources, quality, itemType, options);
 
-            //EXCEPTIONS FOR ARMOR_AND_SHEILDS
-
-
-            //CHANCE FOR INTELLIGENT WEAPONS, RINGS, RODS, STAVES, OR WONDROUS ITEMS
             item = self.getWeightedItem(source.data[itemType].data, quality);
             item.source = source.shortName;
+            item.itemType = itemType;
         }
 
         if(!options.disableClue && chance.d100() <= (options.clueChance || 20)) {
@@ -365,7 +392,8 @@ var Grimoire = function(config) { // jshint ignore:line
         options = options ? options : {};
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
 
-        var maxRoll = options.maxRoll || _.sum(_.map(itemData, function(item) { return item.weight[quality]; }));
+        var maxRoll = options.maxRoll || _.sum(_.map(itemData, function(item) { 
+                                                return item.weight[quality]; }));
         var roll = chance.integer({min: 1, max: maxRoll});
         var item = {};
 
@@ -382,21 +410,21 @@ var Grimoire = function(config) { // jshint ignore:line
         console.error('Could not find valid '+quality+'item in',itemData);
     };
 
+    //options.type can be 'Arcane' or 'Divine'
     this.getSpells = function(level, count, options) {
         options = options ? options : {};
-        var sources = options.sources ? options.sources : self.SOURCES;
-        var type = options.type; //if undefined, we'll pass it on
 
         var spells = [];
         self.chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
 
-        _.times(count, function() {          
-            spells.push(self.getSpell(sources, level, type, options));
+        _.times(count, function() {
+            spells.push(self.getSpell(level, options));
         });
 
         return spells;
     };
 
+    //options.type can be 'Arcane' or 'Divine'
     this.getSpell = function(level, options) {
         options = options ? options : {};
         var sources = options.sources ? options.sources : self.SOURCES;
@@ -421,40 +449,22 @@ var Grimoire = function(config) { // jshint ignore:line
         return spell;
     };
 
+    //options.level manually override the scroll spell level
     this.getScroll = function(quality, options) {
         options = options ? options : {};
 
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
 
         var cost = [12.5, 25, 150, 375, 700, 1125, 1650, 2275, 3000, 3825];
-        var spellLevel = 0;
+        var spellLevel = options.scrollLevel;
 
-        var roll = chance.integer({min: 1, max: 100});
-        if(quality == QUALITIES.MINOR) {
-            switch(true) {
-                case (roll <= 5): spellLevel = 0; break;
-                case (roll <= 50): spellLevel = 1; break;
-                case (roll <= 95): spellLevel = 2; break;
-                case (roll <= 100): spellLevel = 3; break;
-            }
-        }
-        else if(quality == QUALITIES.MEDIUM) {
-            switch(true) {
-                case (roll <= 5): spellLevel = 2; break;
-                case (roll <= 65): spellLevel = 3; break;
-                case (roll <= 95): spellLevel = 4; break;
-                case (roll <= 100): spellLevel = 5; break;
-            }
-        }
-        else if(quality == QUALITIES.MAJOR) {
-            switch(true) {
-                case (roll <= 5): spellLevel = 4; break;
-                case (roll <= 50): spellLevel = 5; break;
-                case (roll <= 70): spellLevel = 6; break;
-                case (roll <= 85): spellLevel = 7; break;
-                case (roll <= 95): spellLevel = 8; break;
-                case (roll <= 100): spellLevel = 9; break;
-            }
+        if(!spellLevel || spellLevel < 0 || spellLevel > 9) {
+            var weights = {};
+            weights[QUALITIES.MINOR]  = [5, 45, 45,  5,  0,  0,  0,  0,  0, 0];
+            weights[QUALITIES.MEDIUM] = [0,  0,  5, 60, 30,  5,  0,  0,  0, 0];
+            weights[QUALITIES.MAJOR]  = [0,  0,  0,  0,  5, 45, 20, 15, 10, 5];
+
+            spellLevel = chance.weighted([0,1,2,3,4,5,6,7,8,9], weights[quality]);
         }
 
         options.quality = quality;
@@ -464,7 +474,8 @@ var Grimoire = function(config) { // jshint ignore:line
             'name': 'Scroll of ' + spell.name,
             'description': '(' + spell.type + ', spell level ' + spellLevel + ', caster level ' + _.max([1, (spellLevel*2-1)]) + ')',
             'cost': cost[spellLevel],
-            'source': spell.source
+            'source': spell.source,
+            'itemType': TYPES.SCROLLS
         };
     };
 
@@ -492,7 +503,8 @@ var Grimoire = function(config) { // jshint ignore:line
             'name': 'Potion/Oil of ' + chance.pick(source.data[TYPES.POTIONS].data[level]),
             'description': '(spell level ' + level + ', caster level ' + _.max([1, (level*2-1)]) + ')',
             'cost': cost[level],
-            'source': source.shortName
+            'source': source.shortName,
+            'itemType': TYPES.POTIONS
         };
     };
 
@@ -520,7 +532,8 @@ var Grimoire = function(config) { // jshint ignore:line
         return {'name': 'Wand of ' + spell.name,
                 'description': '(spell level ' + level + ', caster level ' + _.max([1, (level*2-1)]) + ', 50 charges)',
                 'cost': cost[level],
-                'source': spell.source
+                'source': spell.source,
+                'itemType': TYPES.WANDS
             };
     };
 
@@ -535,14 +548,57 @@ var Grimoire = function(config) { // jshint ignore:line
         //wondrous items of the same quality have equal probability weight
         var item = _.clone(chance.pick(source.data[TYPES.WONDROUS_ITEMS].data[quality]));
         item.source = source.shortName;
+        item.itemType = TYPES.WONDROUS_ITEMS;
         
-        //make an intelligent item if we either want ALL intelligent items
-        //OR intelligent items are NOT disabled AND we roll under the chance threshold
-        if(options.allIntelligent || (!options.disableIntelligent && chance.d100() <= (options.intelligenceChance || 1))) {
-            item.intelligence = self.getIntelligence(item.cost, options); //'WOOHOO I AM INTELLIGENT!';
-            item.cost += item.intelligence.cost;
+        //consumable items should NEVER be intelligent. I don't have a perfect filter, but here's a start
+        //I may instead add an attribute for 'consumable'
+        if(!/\b(dust|token|tome|elixir|salve|ointment|polish)\b/i.test(item.name)) {
+            //make an intelligent item if we either want ALL intelligent items
+            //OR intelligent items are NOT disabled AND we roll under the chance threshold
+            if(options.allIntelligent || (!options.disableIntelligent && chance.d100() <= (options.intelligenceChance || 1))) {
+                item.intelligence = self.getIntelligence(item.cost, options); //'WOOHOO I AM INTELLIGENT!';
+                item.cost += item.intelligence.cost;
+            }
         }
         return item;
+    };
+
+    this.getRing = function(quality, options) {
+        options = options ? options : {};
+
+        var sources = options.sources ? options.sources : self.SOURCES;
+        var source = selectSource(sources, quality, TYPES.RINGS, options);
+        var ring = self.getWeightedItem(source.data[TYPES.RINGS].data, quality);
+        ring.source = source.shortName;
+        ring.itemType = TYPES.RINGS;
+        return ring;
+    };
+
+    this.getRod = function(quality, options) {
+        options = options ? options : {};
+
+        var sources = options.sources ? options.sources : self.SOURCES;
+        var source = selectSource(sources, quality, TYPES.RODS, options);
+        var rod = self.getWeightedItem(source.data[TYPES.RODS].data, quality);
+        rod.source = source.shortName;
+        rod.itemType = TYPES.RODS;
+        return rod;
+    };
+
+    this.getStaff = function(quality, options) {
+        options = options ? options : {};
+        if(quality == QUALITIES.MINOR) {
+            console.error('Error! There are no minor staves!');
+            return;
+        }
+
+        var sources = options.sources ? options.sources : self.SOURCES;
+        var source = selectSource(sources, quality, TYPES.STAVES, options);
+        var staff = self.getWeightedItem(source.data[TYPES.STAVES].data, quality);
+        staff.source = source.shortName;
+        staff.itemType = TYPES.STAVES;
+
+        return staff;
     };
 
     this.getHumanoid = function(options) {
@@ -605,6 +661,7 @@ var Grimoire = function(config) { // jshint ignore:line
                 var special1 = self.getSpecials(quality, type, options);
                 options.excludeSpecials = options.excludeSpecials.concat(special1); //exclude the special(s) just rolled
                 var special2 = self.getSpecials(quality, type, options);
+                //console.log('s1', special1[0].name, 's2', special2[0].name);
                 return special1.concat(special2); //could contain more than one special
             }
             else { //only 1 special
@@ -623,7 +680,7 @@ var Grimoire = function(config) { // jshint ignore:line
             special.name = special.name.replace(/GET_ENERGY_RESISTANCE_TYPE/, self.getEnergyType(options));
         }
 
-        return [special]; //could contain one or more specials
+        return [special]; //return special as array in case we need to concat it with another special
     };
 
     this.getUniqueWeapon = function(quality, options) {
@@ -636,21 +693,27 @@ var Grimoire = function(config) { // jshint ignore:line
         var source = selectSource(sources, quality, 'Uniques', options);
         var weapon = self.getWeightedItem(source.data[TYPES.WEAPONS].data.uniqueWeapons, quality);
         weapon.source = source.shortName;
+        weapon.itemType = TYPES.WEAPONS;
 
         return weapon;
     };
 
     //options.type can be 'melee' or 'ranged'
-    //note that this option is not alwawys honored when a unique item is rolled
+    //note that this option is NOT alwawys honored when a unique item is rolled
+    //I'm not sure if unique weapons should be allowed to have modifiers.
+    //I'm allowing it because it is more awesome. This can cause problems when the unique rolled is, for example, an arrow
+    //config.maxSpecials set to limit the number of specials per weapon generated
     this.getWeapon = function(quality, options) {
         options = options ? options : {};
         options.excludeSpecials = options.excludeSpecials || [];
+        options.maxSpecials = options.maxSpecials || 5;
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
         var weapon = {
             name: '',
             type: '',
             bonus: 0,
             baseCost: 0,
+            cost: 0,
             specials: [],
             intelligence: {},
             glowing: false
@@ -729,21 +792,24 @@ var Grimoire = function(config) { // jshint ignore:line
             weapon.url = unique.url;
         }
         else if(action == 'getSpecial') {
-            weapon = self.getWeapon(quality, options);
-            var specialsBonus = _.chain(weapon.specials).map(function(s) { return s.bonus; }).sum().value();
-            var specials = [];
-            var newSpecialsBonus = 0;
-            options.excludeSpecials = options.excludeSpecials.concat(weapon.specials);
-            if(weapon.bonus + specialsBonus < 10) {
-                var tries = 5;
-                //this has the opportunity to loop forever either if no match can be found
-                do {
-                    specials = self.getSpecials(quality, weapon.type, options);
-                    newSpecialsBonus = _.chain(specials).map(function(s) { return s.bonus; }).sum().value();
-
-                } while(weapon.bonus + specialsBonus + newSpecialsBonus > 10 && --tries > 0);
-                if(tries > 0) { //we found a match without running out of tries!
-                    weapon.specials = weapon.specials.concat(specials);
+            //console.log('weapon', weapon.specials.length, 'max', options.maxSpecials);
+            if(weapon.specials.length < options.maxSpecials) {
+                weapon = self.getWeapon(quality, options);
+                var specialsBonus = _.chain(weapon.specials).map(function(s) { return s.bonus; }).sum().value();
+                var specials = [];
+                var newSpecialsBonus = 0;
+                options.excludeSpecials = options.excludeSpecials.concat(weapon.specials);
+                if(weapon.bonus + specialsBonus < 10) {
+                    var tries = 5;
+                    //this has the opportunity to loop forever either if no match can be found
+                    do {
+                        specials = self.getSpecials(quality, weapon.type, options);
+                        newSpecialsBonus = _.chain(specials).map(function(s) { return s.bonus; }).sum().value();
+                    } while((weapon.bonus + specialsBonus + newSpecialsBonus > 10 ||
+                            weapon.specials.length + specials.length > options.maxSpecials) && --tries > 0);
+                    if(tries > 0) { //we found a match without running out of tries!
+                        weapon.specials = weapon.specials.concat(specials);
+                    }
                 }
             }
         }        
@@ -760,6 +826,9 @@ var Grimoire = function(config) { // jshint ignore:line
         if(!options.disableGlowing && chance.d100() <= (options.glowingChance || 30)) {
             weapon.glowing = true;
         }
+        
+        var totalBonus = weapon.bonus + _.sum(_.map(weapon.specials, function(s) { return s.bonsu; }));
+        weapon.cost = weapon.baseCost + 2000 * Math.pow(totalBonus, 2) + (weapon.intelligence.cost || 0);
         weapon.print = function() {
             var ret = 'Name: ';
             ret += this.glowing ? 'Glowing ' : '';
@@ -768,19 +837,209 @@ var Grimoire = function(config) { // jshint ignore:line
             ret += this.name ? this.name : (this.type + ' weapon');
             ret += ';';
             ret += this.intelligence.print ? 'Intelligence: [' + this.intelligence.print() + '];' : '';
-            ret += 'Cost: ' + (this.baseCost + 2000 * Math.pow(weapon.bonus, 2) + this.intelligence.cost) + 'gp';
+            ret += 'Cost: ' + this.cost + 'gp';
             return ret;
         };
 
+        weapon.itemType = TYPES.WEAPONS;
         return weapon;
+    };
+
+    this.getUniqueArmorOrShield = function(quality, options) {
+        options = options ? options : {};
+        var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
+
+        options.itemType = TYPES.ARMOR_AND_SHIELDS;
+        options.uniqueType = (options.type == 'armor' ? 'uniqueArmors' :
+                                options.type == 'shield' ? 'uniqueShields' :
+                                chance.pick(['uniqueArmors', 'uniqueShields'])); //50-50 chance if type is not selected
+
+        var sources = options.sources ? options.sources : self.SOURCES;
+
+        var source = selectSource(sources, quality, 'Uniques', options);
+        var item = self.getWeightedItem(source.data[TYPES.ARMOR_AND_SHIELDS].data[options.uniqueType], quality);
+        item.source = source.shortName;
+        item.itemType = TYPES.ARMOR_AND_SHIELDS;
+
+        return item;
     };
 
     //options.type can be 'armor' or 'shield'
     this.getArmorOrShield = function(quality, options) {
         options = options ? options : {};
+        options.excludeSpecials = options.excludeSpecials || [];
+        options.maxSpecials = options.maxSpecials || 5;
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
 
-        var item = {};
+        var item = {
+            name: '',
+            type: '',
+            bonus: 0,
+            baseCost: 0,
+            cost: 0,
+            specials: [],
+        };
+
+        var roll = chance.d100();
+        var action = '';
+
+        if(quality == QUALITIES.MINOR) {
+            if(roll <= 60) {
+                item.type = 'shield';
+                item.bonus = 1;
+            }
+            else if(roll <= 80) {
+                item.type = 'armor';
+                item.bonus = 1;
+            }
+            else if(roll <= 85) {
+                item.type = 'shield';
+                item.bonus = 2;
+            }
+            else if(roll <= 87) {
+                item.type = 'armor';
+                item.bonus = 2;
+            }
+            else if(roll <= 89) {
+                item.type = 'armor';
+                action = 'getUnique';
+            }
+            else if(roll <= 91) {
+                item.type = 'shield';
+                action = 'getUnique';
+            }
+            else if(roll <= 100) {
+                //9% special ability and roll again
+                action = 'getSpecial';
+            }
+        }
+        else if(quality == QUALITIES.MEDIUM) {
+            if(roll <= 5) {
+                item.type = 'shield';
+                item.bonus = 1;
+            }
+            else if(roll <= 10) {
+                item.type = 'armor';
+                item.bonus = 1;
+            }
+            else if(roll <= 20) {
+                item.type = 'shield';
+                item.bonus = 2;
+            }
+            else if(roll <= 30) {
+                item.type = 'armor';
+                item.bonus = 2;
+            }
+            else if(roll <= 40) {
+                item.type = 'shield';
+                item.bonus = 3;
+            }
+            else if(roll <= 50) {
+                item.type = 'armor';
+                item.bonus = 3;
+            }
+            else if(roll <= 55) {
+                item.type = 'shield';
+                item.bonus = 4;
+            }
+            else if(roll <= 57) {
+                item.type = 'armor';
+                item.bonus = 2;
+            }
+            else if(roll <= 60) {
+                item.type = 'armor';
+                action = 'getUnique';
+            }
+            else if(roll <= 63) {
+                item.type = 'shield';
+                action = 'getUnique';
+            }
+            else if(roll <= 100) {
+                //37% special ability and roll again
+                action = 'getSpecial';
+            }
+        }
+        else if(quality == QUALITIES.MAJOR) {
+            if(roll <= 8) {
+                item.type = 'shield';
+                item.bonus = 3;
+            }
+            else if(roll <= 16) {
+                item.type = 'armor';
+                item.bonus = 3;
+            }
+            else if(roll <= 27) {
+                item.type = 'shield';
+                item.bonus = 4;
+            }
+            else if(roll <= 38) {
+                item.type = 'armor';
+                item.bonus = 4;
+            }
+            else if(roll <= 49) {
+                item.type = 'shield';
+                item.bonus = 5;
+            }
+            else if(roll <= 57) {
+                item.type = 'armor';
+                item.bonus = 5;
+            }
+            else if(roll <= 60) {
+                item.type = 'armor';
+                action = 'getUnique';
+            }
+            else if(roll <= 63) {
+                item.type = 'shield';
+                action = 'getUnique';
+            }
+            else if(roll <= 100) {
+                //37% special ability and roll again
+                action = 'getSpecial';
+            }
+        }
+        if(action == 'getUnique') {
+            options.type = item.type;
+            var unique = self.getUniqueArmorOrShield(quality, options);
+            item.name = unique.name;
+            item.baseCost = unique.cost;
+            item.url = unique.url;
+        }
+        else if(action == 'getSpecial') {
+            item = self.getArmorOrShield(quality, options);
+            var specialsBonus = _.chain(item.specials).map(function(s) { return s.bonus; }).sum().value();
+
+            var specials = [];
+            var newSpecialsBonus = 0;
+            options.excludeSpecials = options.excludeSpecials.concat(item.specials);
+            if(item.bonus + specialsBonus < 10) {
+                var tries = 5;
+                //this has the opportunity to loop forever either if no match can be found
+                do {
+                    specials = self.getSpecials(quality, item.type, options);
+                    newSpecialsBonus = _.chain(specials).map(function(s) { return s.bonus; }).sum().value();
+
+                } while(item.bonus + specialsBonus + newSpecialsBonus > 10 && --tries > 0);
+                if(tries > 0) { //we found a match without running out of tries!
+                    item.specials = item.specials.concat(specials);
+                }
+            }
+        }
+
+
+        var totalBonus = item.bonus + _.sum(_.map(item.specials, function(s) { return s.bonsu; }));
+        item.cost = item.baseCost + 2000 * Math.pow(totalBonus, 2);
+
+        item.print = function() {
+            var ret = 'Name: ';
+            ret += this.bonus > 0 ? ('+' + this.bonus + ' ') : '';
+            ret += this.specials.length > 0 ? _.map(this.specials, function(s) { return s.name;}).join(', ') + ' ' : '';
+            ret += this.name ? this.name : this.type;
+            ret += ';';
+            ret += 'Cost: ' + this.cost + 'gp';
+            return ret;
+        };
+
+        item.itemType = TYPES.ARMOR_AND_SHIELDS;
         return item;
     };
 
@@ -917,16 +1176,15 @@ var Grimoire = function(config) { // jshint ignore:line
         //The probability for more powers is directly related to the base cost of the item
         //I made up these roll weights. references the same basecost as the basic ego modifier
         switch(true) {
-            case (baseCost <= 1000):   powerWeights = [6,4,0,0,0]; break;
-            case (baseCost <= 5000):   powerWeights = [3,4,3,0,0]; break;
-            case (baseCost <= 10000):  powerWeights = [2,3,4,1,0]; break;
-            case (baseCost <= 20000):  powerWeights = [1,3,4,2,0]; break;
-            case (baseCost <= 50000):  powerWeights = [0,2,4,3,1]; break;
-            case (baseCost <= 100000): powerWeights = [0,1,3,4,2]; break;
-            case (baseCost <= 200000): powerWeights = [0,0,2,5,3]; break;
-            case (baseCost  > 200000): powerWeights = [0,0,0,6,4]; break;
+            case (baseCost <= 1000):   powerCountWeights = [6,4,0,0,0]; break;
+            case (baseCost <= 5000):   powerCountWeights = [3,4,3,0,0]; break;
+            case (baseCost <= 10000):  powerCountWeights = [2,3,4,1,0]; break;
+            case (baseCost <= 20000):  powerCountWeights = [1,3,4,2,0]; break;
+            case (baseCost <= 50000):  powerCountWeights = [0,2,4,3,1]; break;
+            case (baseCost <= 100000): powerCountWeights = [0,1,3,4,2]; break;
+            case (baseCost <= 200000): powerCountWeights = [0,0,2,5,3]; break;
+            case (baseCost  > 200000): powerCountWeights = [0,0,0,6,4]; break;
         }
-
 
         var powerWeights = _.map(self.ItemPowers, function(p) { return p.weight; });
 
@@ -969,7 +1227,7 @@ var Grimoire = function(config) { // jshint ignore:line
             i.ego += p.egoMod;
             i.cost += p.costMod;
 
-            if(/Linguistics/.test(p.description)) { //check if we got any ranks in linguistics
+            if(/Linguistics/i.test(p.description)) { //check if we got any ranks in linguistics
                 bonusLanguages += p.value;
             }
 
@@ -1021,7 +1279,7 @@ var Grimoire = function(config) { // jshint ignore:line
             }
 
             //console.log(i.purpose.description);
-            i.dedicatedPowers = []; //chance.pick()
+            i.dedicatedPowers = [];
             //I decided that purposed items get between 1-3 dedicated powers, heavily leaning on 1
             var numDedicatedPowers = options.numDedicatedPowers || chance.weighted([1,2,3], [7,2,1]);
             _.times(numDedicatedPowers, function() {
@@ -1070,48 +1328,4 @@ var Grimoire = function(config) { // jshint ignore:line
         return i; //object intelligence
     };
 
-};
-
-
-//DEBUG - pass an instance of Grimoire
-var Debug = function(grimoire) { // jshint ignore:line
-    //var self = this;
-    this.grimoire = grimoire;
-
-    if(!grimoire) {
-        console.error('did not get an instance of grimoire!');
-        return;
-    }
-    this.validateSources = function() {
-        grimoire.SOURCES.forEach(function(source) {
-            console.log('----', source.name, '----');
-            source.types.forEach(function(type) {
-                if(type.source) {
-                    if(!source.data[type.name] || !source.data[type.name].data) {
-                        console.log(source.shortName + ' failed to load ' + type.name + '!');
-                    }
-                    console.log(type.name, source.data[type.name]);
-                    if(type.name == TYPES.RINGS) {
-                        var weights = {};
-                        weights[QUALITIES.MINOR] = 0;
-                        weights[QUALITIES.MEDIUM] = 0;
-                        weights[QUALITIES.MAJOR] = 0;
-                        source.data[type.name].data.forEach(function(ring) {
-                            if(!ring.cost || ring.cost < 0) {
-                                console.error('Invalid cost', ring.cost, 'for', ring.name);
-                            }
-                            
-                            if(!_.sum(ring.weight)) {
-                                console.error(ring.name, 'has no weight!');
-                            }
-                            weights[QUALITIES.MINOR] += ring.weight.minor;
-                            weights[QUALITIES.MEDIUM] += ring.weight.medium;
-                            weights[QUALITIES.MAJOR] += ring.weight.major;
-                        });
-                        console.log('Weights ', weights);
-                    }
-                }
-            });
-        });
-    };
 };
