@@ -669,7 +669,8 @@ var Grimoire = function(config) { // jshint ignore:line
             } else if(/GET_ENERGY_RESISTANCE_TYPE/.test(special.name)) {
                 special.name = special.name.replace(/GET_ENERGY_RESISTANCE_TYPE/, self.getEnergyType(options));
             }
-        } while(options.excludeSpecials.indexOf(special) != -1); //if we get something from our exclusions, try again
+
+        } while(_.chain(options.excludeSpecials).map(function(s) { return s.name; }).includes(special.name).value()); //if we get something from our exclusions, try again
         specials.push(special);
 
         var roll = chance.d100();
@@ -861,6 +862,7 @@ var Grimoire = function(config) { // jshint ignore:line
         options.uniqueType = (options.type == 'armor' ? 'uniqueArmors' :
                                 options.type == 'shield' ? 'uniqueShields' :
                                 chance.pick(['uniqueArmors', 'uniqueShields'])); //50-50 chance if type is not selected
+        options.disableRecursiveSpecials = options.disableRecursiveSpecials || false;
 
         var sources = options.sources ? options.sources : self.SOURCES;
 
@@ -1013,23 +1015,25 @@ var Grimoire = function(config) { // jshint ignore:line
             item.url = unique.url;
         }
         else if(action == 'getSpecial') {
-            item = self.getArmorOrShield(quality, options);
-            var specialsBonus = _.chain(item.specials).map(function(s) { return s.bonus; }).sum().value();
+            if(item.specials.length === 0 || options.disableRecursiveSpecials === false) {
+                item = self.getArmorOrShield(quality, options);
+                var specialsBonus = _.chain(item.specials).map(function(s) { return s.bonus; }).sum().value();
 
-            var specials = [];
-            var newSpecialsBonus = 0;
-            options.excludeSpecials = options.excludeSpecials.concat(item.specials);
+                var specials = [];
+                var newSpecialsBonus = 0;
+                options.excludeSpecials = options.excludeSpecials.concat(item.specials);
 
-            if(item.bonus + specialsBonus < 10) {
-                var tries = 5;
-                //this has the opportunity to loop forever either if no match can be found
-                do {
-                    specials = self.getSpecials(quality, item.type, options);
-                    newSpecialsBonus = _.chain(specials).map(function(s) { return s.bonus; }).sum().value();
+                if(item.bonus + specialsBonus < 10) {
+                    var tries = 5;
+                    //this has the opportunity to loop forever either if no match can be found
+                    do {
+                        specials = self.getSpecials(quality, item.type, options);
+                        newSpecialsBonus = _.chain(specials).map(function(s) { return s.bonus; }).sum().value();
 
-                } while(item.bonus + specialsBonus + newSpecialsBonus > 10 && --tries > 0);
-                if(tries > 0) { //we found a match without running out of tries!
-                    item.specials = item.specials.concat(specials);
+                    } while(item.bonus + specialsBonus + newSpecialsBonus > 10 && --tries > 0);
+                    if(tries > 0) { //we found a match without running out of tries!
+                        item.specials = item.specials.concat(specials);
+                    }
                 }
             }
         }
