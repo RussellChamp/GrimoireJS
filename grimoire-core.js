@@ -185,9 +185,9 @@ var Grimoire = function(config) { // jshint ignore:line
                 console.error('itemType or uniqueType not provided', options);
             }
             sourceWeights = _.map(sources, function(source) {
-                if(source.data[options.itemType] && source.data[options.itemType].enabled &&
-                    source.data[options.itemType].data[options.uniqueType]) {
-                        return _.filter(source.data[options.itemType].data[options.uniqueType],
+                var items = source.data[options.itemType];
+                if(items && items.enabled && items.data[options.uniqueType]) {
+                        return _.filter(items.data[options.uniqueType],
                         function(special) { 
                             return special.weight[quality] > 0; 
                         }).length; //return a count of all specials that have a quality weight above 0
@@ -636,6 +636,7 @@ var Grimoire = function(config) { // jshint ignore:line
     //type is 'armor', 'shield', 'melee', or 'ranged'
     //options.excludeSpecials can contain a list of specials you do NOT want to get
     //this is useful when creating a weapon that you do not want to have duplicate specials
+    //options.disableRecursiveSpecials 
     this.getSpecials = function(quality, type, options) {
         options = options ? options : {};
         options.excludeSpecials = options.excludeSpecials ? options.excludeSpecials : [];
@@ -644,6 +645,7 @@ var Grimoire = function(config) { // jshint ignore:line
                             (type == 'armor' || type == 'shield') ? TYPES.ARMOR_AND_SHIELDS :
                             undefined;
         options.specialType = type + 'Specials';
+        options.disableRecursiveSpecials = options.disableRecursiveSpecials || false;
         if(!options.itemType) {
             console.error('Invalid special type', type);
             return;
@@ -652,35 +654,41 @@ var Grimoire = function(config) { // jshint ignore:line
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
         var sources = options.sources ? options.sources : self.SOURCES;
 
+        var specials = [];
         var special = {};
         do {
-            var roll = chance.d100();
-            if((quality == QUALITIES.MINOR && roll === 100) ||
-                (quality == QUALITIES.MEDIUM && roll > 95) ||
-                (quality == QUALITIES.MAJOR && roll > 90)) {
-                var special1 = self.getSpecials(quality, type, options);
-                options.excludeSpecials = options.excludeSpecials.concat(special1); //exclude the special(s) just rolled
-                var special2 = self.getSpecials(quality, type, options);
-                //console.log('s1', special1[0].name, 's2', special2[0].name);
-                return special1.concat(special2); //could contain more than one special
-            }
-            else { //only 1 special
-                var source = selectSource(sources, quality, 'Specials', options);
-                //data source will look like source.data.Weapons.meleeSpecials
+            var source = selectSource(sources, quality, 'Specials', options);
+            //data source will look like source.data.Weapons.meleeSpecials
 
-                special = self.getWeightedItem(source.data[options.itemType].data[options.specialType], quality);
-                special.source = source.shortName;
-            }
-        } while(options.excludeSpecials.indexOf(special) != -1); //if we have a duplicate, try again
+            special = self.getWeightedItem(source.data[options.itemType].data[options.specialType], quality);
+            special.source = source.shortName;
 
-        //EXCEPTION for Bane special
-        if(/GET_BANE_TYPE/.test(special.name)) {
-            special.name = special.name.replace(/GET_BANE_TYPE/, self.getBane(options));
-        } else if(/GET_ENERGY_RESISTANCE_TYPE/.test(special.name)) {
-            special.name = special.name.replace(/GET_ENERGY_RESISTANCE_TYPE/, self.getEnergyType(options));
+            //EXCEPTION for Bane special
+            if(/GET_BANE_TYPE/.test(special.name)) {
+                special.name = special.name.replace(/GET_BANE_TYPE/, self.getBane(options));
+            } else if(/GET_ENERGY_RESISTANCE_TYPE/.test(special.name)) {
+                special.name = special.name.replace(/GET_ENERGY_RESISTANCE_TYPE/, self.getEnergyType(options));
+            }
+        } while(options.excludeSpecials.indexOf(special) != -1); //if we get something from our exclusions, try again
+        specials.push(special);
+
+        var roll = chance.d100();
+        //chance for a second special
+        if((quality == QUALITIES.MINOR && roll === 100) ||
+            (quality == QUALITIES.MEDIUM && roll > 95) ||
+            (quality == QUALITIES.MAJOR && roll > 90)) {
+            
+            options.excludeSpecials = options.excludeSpecials.concat(specials); //exclude the special(s) just rolled
+            var bonusSpecials = self.getSpecials(quality, type, options);
+            if(options.disableRecursiveSpecials) {
+                specials.push(bonusSpecials[0]); //if we're not allowed to return recursive specials, just take the first one
+            }
+            else {
+                specials = specials.concat(bonusSpecials);
+            }
         }
 
-        return [special]; //return special as array in case we need to concat it with another special
+        return specials; //return special as array in case we need to concat it with another special
     };
 
     this.getUniqueWeapon = function(quality, options) {
@@ -702,11 +710,12 @@ var Grimoire = function(config) { // jshint ignore:line
     //note that this option is NOT alwawys honored when a unique item is rolled
     //I'm not sure if unique weapons should be allowed to have modifiers.
     //I'm allowing it because it is more awesome. This can cause problems when the unique rolled is, for example, an arrow
-    //config.maxSpecials set to limit the number of specials per weapon generated
+    //config.disableRecursiveSpecials If you roll 'get a special and roll again' twice, it will only
+    // generate one specials
     this.getWeapon = function(quality, options) {
         options = options ? options : {};
         options.excludeSpecials = options.excludeSpecials || [];
-        options.maxSpecials = options.maxSpecials || 5;
+        options.disableRecursiveSpecials = options.disableRecursiveSpecials || false;
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
         var weapon = {
             name: '',
@@ -792,8 +801,8 @@ var Grimoire = function(config) { // jshint ignore:line
             weapon.url = unique.url;
         }
         else if(action == 'getSpecial') {
-            //console.log('weapon', weapon.specials.length, 'max', options.maxSpecials);
-            if(weapon.specials.length < options.maxSpecials) {
+            //if we either do not already have any specials OR we allow recursive specials
+            if(weapon.specials.length === 0 || options.disableRecursiveSpecials === false) {
                 weapon = self.getWeapon(quality, options);
                 var specialsBonus = _.chain(weapon.specials).map(function(s) { return s.bonus; }).sum().value();
                 var specials = [];
@@ -805,8 +814,7 @@ var Grimoire = function(config) { // jshint ignore:line
                     do {
                         specials = self.getSpecials(quality, weapon.type, options);
                         newSpecialsBonus = _.chain(specials).map(function(s) { return s.bonus; }).sum().value();
-                    } while((weapon.bonus + specialsBonus + newSpecialsBonus > 10 ||
-                            weapon.specials.length + specials.length > options.maxSpecials) && --tries > 0);
+                    } while(weapon.bonus + specialsBonus + newSpecialsBonus > 10  && --tries > 0);
                     if(tries > 0) { //we found a match without running out of tries!
                         weapon.specials = weapon.specials.concat(specials);
                     }
@@ -1011,6 +1019,7 @@ var Grimoire = function(config) { // jshint ignore:line
             var specials = [];
             var newSpecialsBonus = 0;
             options.excludeSpecials = options.excludeSpecials.concat(item.specials);
+
             if(item.bonus + specialsBonus < 10) {
                 var tries = 5;
                 //this has the opportunity to loop forever either if no match can be found

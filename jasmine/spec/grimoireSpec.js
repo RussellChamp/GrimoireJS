@@ -1,7 +1,7 @@
 /*global Grimoire:true, _:true, jasmine:true, describe:true, beforeEach:true, it:true, expect:true*/
 'use strict';
 
-xdescribe('Sources', function() {
+describe('Sources', function() {
     var grimoire = new Grimoire();
     it('should load sources', function() {
         expect(grimoire.SOURCES).toBeTruthy();
@@ -64,7 +64,7 @@ xdescribe('Sources', function() {
                                 }
                             });
                             //CURRENTLY MISSING WEIGHTS ON APG ITEMS
-                            xit('should have weights', function() {
+                            it('should have weights', function() {
                                 for(var i in itemList) {
                                     var weightSum = _.sum(_.values(itemList[i].weight));
                                     expect(weightSum).toBeGreaterThan(0);
@@ -300,10 +300,12 @@ describe('Grimoire', function() {
         });
     });
 
-    //not written yet
-    // describe('getArmorOrSheild', function() {
-    //     ;
-    // });
+    describe('getArmorOrSheild', function() {
+        it('should get an armor or shield', function() {
+            var item = grimoire.getArmorOrShield('medium');
+            expect(item.itemType).toBe('Armor and Shields');
+        });
+    });
 
     describe('getAlignment', function() {
         it('should get an Alignment', function() {
