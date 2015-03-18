@@ -28,12 +28,6 @@ var ENERGY_TYPES = {
     FIRE: 'Fire',
     SONIC: 'Sonic'
 };
-/*var ARMOR_BONUS_COST = [ //cost for a +# armor or shield. bonus^2 * 1000
-    0, 1000, 4000, 9000, 16000, 25000, 36000, 49000, 64000, 81000, 100000
-];
-var WEAPON_BONUS_COST = [ //cost for a +# weapon. bonus^2 * 2000
-     0, 2000, 8000, 18000, 32000, 50000, 72000, 98000, 128000, 162000, 200000
-];*/
 var QUALITIES = {
     MINOR:'minor',
     MEDIUM: 'medium',
@@ -1040,7 +1034,7 @@ var Grimoire = function(config) { // jshint ignore:line
 
 
         var totalBonus = item.bonus + _.sum(_.map(item.specials, function(s) { return s.bonsu; }));
-        item.cost = item.baseCost + 2000 * Math.pow(totalBonus, 2);
+        item.cost = item.baseCost + 1000 * Math.pow(totalBonus, 2);
 
         item.print = function() {
             var ret = 'Name: ';
