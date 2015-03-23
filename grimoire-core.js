@@ -474,6 +474,48 @@ var Grimoire = function(config) { // jshint ignore:line
         };
     };
 
+    this.getSpellbook = function(casterLevel, options) {
+        options = options ? options : {};
+        var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
+        if(casterLevel) {
+            casterLevel = _.min([casterLevel, 20]);
+            var spells = [];
+            //there's really no precident for this.
+            //I'm just going to assume Wizard only.
+            //Assume ALL cantrips
+            //Wizards know 3 + Int level 1 spells at level 1
+            //Ever level, a wizard adds two new spells to his book
+            //The minimum CL for a spell is (spell * 2 - 1)
+            //We will just take a shot and say the following
+            //One they qualify for that spell level, a wizard will get two at that level
+            // and two more on the next level. Past that, a wizard will gain an additional
+            // spell of each spell level he knows every few levels.
+            var slvl = [2,4,5,5,6,6,6,7,7,7,7,8,8,8,8,9,9,9,9,10];
+            //console.log("At Caster Level " + String(casterLevel) + " you get:");
+            for(var spellLevel = 1; spellLevel <= 9; spellLevel++) {
+                var numSpells = 0;
+                if(casterLevel >= spellLevel * 2 - 1) { //minimum requirement
+                    numSpells = slvl[casterLevel - (spellLevel*2-1)];
+                    if(spellLevel === 1) {
+                        numSpells += 4; //since you start with 3 + Int first level spells
+                    }
+                    //console.log(String(numSpells) + " level " + String(spellLevel) + " spells");
+                    for(var i = 0; i < numSpells; i++) {
+                        var newSpell = {};
+                        do {
+                            newSpell = Spells.getLevelSpell(spellLevel, 'arcane');
+                        } while(_.contains(spells, newSpell)); //duplicate
+                        spells.push(newSpell);
+                    }
+                }
+                else {
+                    break; //no point checking the higher levels
+                }
+            }
+            return spells;
+        }
+    };
+
     this.getPotion = function(quality, options) {
         options = options ? options : {};
         var sources = options.sources ? options.sources : self.SOURCES;
