@@ -81,7 +81,7 @@ var Grimoire = function(config) { // jshint ignore:line
         async: false //A project that works now is better than one that doesn't exist.
                      //I MUST come back and revisit this with promises later
     });
-    $.getJSON('sources/sources.json', function(sources) { 
+    $.getJSON('./data/sources.json', function(sources) { 
         sources.sources.forEach(function(url) {
             $.getJSON(url, function(source) {
                     console.log('loaded '+ url);
@@ -129,7 +129,7 @@ var Grimoire = function(config) { // jshint ignore:line
     //                  will not use sources that are marked as disabled
     //options.types manually specify what types you want to get
     this.getItems = function(quality, count, options) {
-        options = options ? options : {};
+        options = options ? _.clone(options) : {};
         var sources = options.sources ? options.sources : self.SOURCES;
         var types = options.types ? options.types : _.values(TYPES);
 
@@ -286,7 +286,7 @@ var Grimoire = function(config) { // jshint ignore:line
                 });
         }
         if(_.sum(sourceWeights) <= 0) {
-            console.error('Unable to find valid ' + quality + ' ' + type + ' within sources!', sources);
+            console.error('Unable to find valid ', quality, type, options.itemType, options.uniqueType, ' within sources!', sources);
             return;
         }
         //chance.weighted will DESTRUCTIVELY modify paramaters that have a weight of zero
@@ -374,7 +374,7 @@ var Grimoire = function(config) { // jshint ignore:line
         }
 
         if(!options.disableClue && chance.d100() <= (options.clueChance || 20)) {
-            item.name += ' with a clue to it\'s purpose!';
+            item.description = 'with a clue to it\'s purpose! ' + (item.description ? item.description : '');
         }
         item.quality = quality;
         return item;
@@ -388,6 +388,7 @@ var Grimoire = function(config) { // jshint ignore:line
 
         var maxRoll = options.maxRoll || _.sum(_.map(itemData, function(item) { 
                                                 return item.weight[quality]; }));
+        //console.log('itemData', itemData, 'quality', quality, 'maxRoll', maxRoll);
         var roll = chance.integer({min: 1, max: maxRoll});
         var item = {};
 
@@ -714,6 +715,7 @@ var Grimoire = function(config) { // jshint ignore:line
         var chance = (self.chance ? self.chance : options.seed ? new Chance(options.seed) : new Chance());
         var weapon = {
             name: '',
+            description: '',
             type: '',
             bonus: 0,
             baseCost: 0,
@@ -830,7 +832,7 @@ var Grimoire = function(config) { // jshint ignore:line
             weapon.glowing = true;
         }
         
-        var totalBonus = weapon.bonus + _.sum(_.map(weapon.specials, function(s) { return s.bonsu; }));
+        var totalBonus = weapon.bonus + _.sum(_.map(weapon.specials, function(s) { return s.bonus; }));
         weapon.cost = weapon.baseCost + 2000 * Math.pow(totalBonus, 2) + (weapon.intelligence.cost || 0);
         weapon.print = function() {
             var ret = 'Name: ';
@@ -838,9 +840,10 @@ var Grimoire = function(config) { // jshint ignore:line
             ret += this.bonus > 0 ? ('+' + this.bonus + ' ') : '';
             ret += this.specials.length > 0 ? _.map(this.specials, function(s) { return s.name;}).join(', ') + ' ' : '';
             ret += this.name ? this.name : (this.type + ' weapon');
+            ret += this.description ? (' ' + this.description) : '';
             ret += ';';
             ret += this.intelligence.print ? 'Intelligence: [' + this.intelligence.print() + '];' : '';
-            ret += 'Cost: ' + this.cost + 'gp';
+            //ret += 'Cost: ' + this.cost + 'gp';
             return ret;
         };
 
@@ -877,6 +880,7 @@ var Grimoire = function(config) { // jshint ignore:line
 
         var item = {
             name: '',
+            description: '',
             type: '',
             bonus: 0,
             baseCost: 0,
@@ -1033,16 +1037,18 @@ var Grimoire = function(config) { // jshint ignore:line
         }
 
 
-        var totalBonus = item.bonus + _.sum(_.map(item.specials, function(s) { return s.bonsu; }));
-        item.cost = item.baseCost + 1000 * Math.pow(totalBonus, 2);
+        var totalBonus = item.bonus + _.sum(_.map(item.specials, function(s) { return s.bonus; }));
+        var specialsCost = _.sum(_.map(item.specials, function(s) { return s.cost; }));
+        item.cost = item.baseCost + 1000 * Math.pow(totalBonus, 2) + specialsCost;
 
         item.print = function() {
             var ret = 'Name: ';
             ret += this.bonus > 0 ? ('+' + this.bonus + ' ') : '';
             ret += this.specials.length > 0 ? _.map(this.specials, function(s) { return s.name;}).join(', ') + ' ' : '';
             ret += this.name ? this.name : this.type;
-            ret += ';';
-            ret += 'Cost: ' + this.cost + 'gp';
+            ret += this.description ? (' ' + this.description) : '';
+            //ret += ';';
+            //ret += 'Cost: ' + this.cost + 'gp';
             return ret;
         };
 
@@ -1253,8 +1259,9 @@ var Grimoire = function(config) { // jshint ignore:line
         //extra languages are based on intelligence and ranks in Linguistics
         bonusLanguages += Math.floor((i.stats.intelligence-10)/2);
         //pick is safe even if we have more bonusLanguages than exist
-        i.languages.concat(chance.pick(self.Languages.data, bonusLanguages));
-
+        if(bonusLanguages > 0) {
+            i.languages = i.languages.concat(chance.pick(self.Languages.data, bonusLanguages));
+        }
 
         //***ITEM PURPOSE***
         //there was NO roll chart for determining if an item has a purpose so I made this up
@@ -1319,14 +1326,14 @@ var Grimoire = function(config) { // jshint ignore:line
             ret += 'Stats: Ego ' + this.ego + ', Int ' + this.stats.intelligence + ', ' +
                     'Wis ' + this.stats.wisdom + ', ' +
                     'Cha ' + this.stats.charisma + ';';
-            ret += 'Communication: ' + this.communication + ' (' + this.languages.join(',' ) + ');';
+            ret += 'Communication: ' + this.communication + ' (' + this.languages.join(', ' ) + ');';
             ret += 'Senses: ' + this.senses + ';';
             ret += 'Powers: ' + _.map(this.powers, function(p) { return p.description; }).join(', ') + ';';
             if(this.purpose) {
                 ret += 'Purpose: ' + this.purpose + ';';
                 ret += 'Dedicated Powers: ' + _.map(this.dedicatedPowers, function(p) {return p.description; }).join(', ') + ';';
             }            
-            ret += 'Cost: ' + i.cost + 'gp';
+            //ret += 'Cost: ' + i.cost + 'gp';
 
             return ret;
 
