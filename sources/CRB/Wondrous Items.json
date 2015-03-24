@@ -250,7 +250,7 @@
         { "name" : "Tome of clear thought +1", "cost" : 27500, "url" : "" },
         { "name" : "Tome of leadership and influence +1", "cost" : 27500,
           "url" : "" },
-        { "name" : "Tome of understanding +1", "cost" : 2750, "url" : "" }],
+        { "name" : "Tome of understanding +1", "cost" : 27500, "url" : "" }],
     "major": [
     { "name" : "Dimensional shackles", "cost" : 28000,
          "url" : "#dimensional-shackles" },
