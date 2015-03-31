@@ -5,7 +5,10 @@
         {"name": "Rings", "source": "sources/APG/Rings.json"},
         {"name": "Rods", "source": "sources/APG/Rods.json"},
         {"name": "Spells", "source": "sources/APG/Spells.json"},
+        {"name": "Staves", "source": "sources/APG/Staves.json"},
         {"name": "Wands"},
+        {"name": "Weapons", "source": "sources/APG/Weapons.json"},
+        {"name": "Armor and Shields", "source": "sources/APG/Armor and Shields.json"},
         {"name": "Wondrous Items", "source": "sources/APG/Wondrous Items.json"}
     ]
 }

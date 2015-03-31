@@ -879,18 +879,23 @@ var Grimoire = function(config) { // jshint ignore:line
         //ALL
         //1% chance to be intelligent (NOT usable items - eg Arrows)
         //30% chance to be glowing
-        if(options.allIntelligent || 
-            (!options.disableIntelligent && chance.d100() <= (options.intelligenceChance || 1))) {
-            var cost = weapon.baseCost + 2000 * Math.pow(weapon.bonus, 2);
-            weapon.intelligence = self.getIntelligence(cost, options); //'WOOHOO I AM INTELLIGENT!';
-            weapon.cost += weapon.intelligence.cost;
+        //ammunition should NEVER be intelligent. I don't have a perfect filter, but here's a start
+        //I may instead add an attribute for 'consumable'
+        if(!/\b(arrow|bolt|bullet)\b/i.test(weapon.name)) {
+            if(options.allIntelligent || 
+                (!options.disableIntelligent && chance.d100() <= (options.intelligenceChance || 1))) {
+                var cost = weapon.baseCost + 2000 * Math.pow(weapon.bonus, 2);
+                weapon.intelligence = self.getIntelligence(cost, options); //'WOOHOO I AM INTELLIGENT!';
+                weapon.cost += weapon.intelligence.cost;
+            }
         }
         if(!options.disableGlowing && chance.d100() <= (options.glowingChance || 30)) {
             weapon.glowing = true;
         }
         
         var totalBonus = weapon.bonus + _.sum(_.map(weapon.specials, function(s) { return s.bonus; }));
-        weapon.cost = weapon.baseCost + 2000 * Math.pow(totalBonus, 2) + (weapon.intelligence.cost || 0);
+        var specialsCost = _.sum(_.map(weapon.specials, function(s) { return s.cost || 0; })); //some specials added in APG have flat costs
+        weapon.cost = weapon.baseCost + 2000 * Math.pow(totalBonus, 2) + specialsCost + (weapon.intelligence.cost || 0);
         weapon.print = function() {
             var ret = 'Name: ';
             ret += this.glowing ? 'Glowing ' : '';
